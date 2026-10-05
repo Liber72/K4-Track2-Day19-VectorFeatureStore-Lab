@@ -16,7 +16,7 @@ from __future__ import annotations
 import time
 import warnings
 from dataclasses import dataclass, field
-from typing import Callable, Iterable
+from typing import Callable
 
 import numpy as np
 from qdrant_client import QdrantClient, models
@@ -34,8 +34,8 @@ class Result:
     strategy: str
     doc_ids: list[str]
     latency_ms: float
-    # How many candidates the engine actually looked at before filtering.
-    # This is what makes the post-filter cliff visible.
+    # Candidates returned to Python (or scanned by our exact baseline).
+    # This does NOT measure how many vectors Qdrant visited internally.
     fetched: int = 0
 
     def recall_against(self, truth: list[str]) -> float:
@@ -50,21 +50,30 @@ class FilteredIndex:
     docs: list[dict]
     vectors: np.ndarray                     # (N, dim) float32, row i <-> docs[i]
     embedder: object
+    collection: str = FILTERED_COLLECTION
     _id_of: dict[str, int] = field(default_factory=dict)
 
     # ── construction ────────────────────────────────────────────────────
     @classmethod
-    def from_searcher(cls, searcher: Searcher) -> "FilteredIndex":
+    def from_searcher(cls, searcher: Searcher,
+                      collection: str = FILTERED_COLLECTION) -> "FilteredIndex":
         """Clone the base collection into a filter-aware one with rich payloads."""
         client = searcher.client
         assert client is not None, "searcher was not built"
 
-        points, _ = client.scroll(
-            collection_name=BASE_COLLECTION,
-            limit=100_000,
-            with_vectors=True,
-            with_payload=True,
-        )
+        if collection == BASE_COLLECTION:
+            raise ValueError("The filtered demo must use a separate collection from NB1")
+        points, offset = [], None
+        while True:
+            batch, offset = client.scroll(
+                collection_name=BASE_COLLECTION, limit=128, offset=offset,
+                with_vectors=True, with_payload=True,
+            )
+            points.extend(batch)
+            if offset is None:
+                break
+        if not points or len(points) != len(searcher.docs):
+            raise ValueError("The NB1 collection is empty or does not match the corpus")
         points = sorted(points, key=lambda p: p.id)
 
         # The base collection's payload only carries doc_id/title/text, so pull
@@ -75,20 +84,13 @@ class FilteredIndex:
         docs = [enrich({**by_id.get(p.payload["doc_id"], {}), **p.payload}) for p in points]
         vectors = np.asarray([p.vector for p in points], dtype=np.float32)
 
-        if FILTERED_COLLECTION in {c.name for c in client.get_collections().collections}:
-            client.delete_collection(FILTERED_COLLECTION)
+        if collection in {c.name for c in client.get_collections().collections}:
+            client.delete_collection(collection)
         client.create_collection(
-            collection_name=FILTERED_COLLECTION,
+            collection_name=collection,
             vectors_config=models.VectorParams(
                 size=vectors.shape[1], distance=models.Distance.COSINE
             ),
-        )
-        client.upsert(
-            collection_name=FILTERED_COLLECTION,
-            points=[
-                models.PointStruct(id=i, vector=vectors[i].tolist(), payload=docs[i])
-                for i in range(len(docs))
-            ],
         )
         # Payload indexes are what let a real Qdrant deployment filter *inside*
         # the HNSW walk instead of after it.
@@ -98,18 +100,22 @@ class FilteredIndex:
             ("topic", models.PayloadSchemaType.KEYWORD),
             ("published_ts", models.PayloadSchemaType.INTEGER),
         ):
-            try:
-                # Local in-memory Qdrant filters correctly but ignores payload
-                # indexes, and warns loudly about it every single run. On a real
-                # server this call is what keeps filtered-ANN fast at scale.
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    client.create_payload_index(FILTERED_COLLECTION, fname,
-                                                field_schema=ftype)
-            except Exception:
-                pass
+            # Local mode ignores indexes; server failures must remain visible.
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", message="Payload indexes have no effect.*")
+                client.create_payload_index(collection, fname, field_schema=ftype, wait=True)
 
-        idx = cls(client=client, docs=docs, vectors=vectors, embedder=searcher.embedder)
+        # Small batches also work with 1,024-dimensional bge-m3 vectors over HTTP.
+        for start in range(0, len(docs), 64):
+            client.upsert(
+                collection_name=collection,
+                points=[models.PointStruct(id=i, vector=vectors[i].tolist(), payload=docs[i])
+                        for i in range(start, min(start + 64, len(docs)))],
+                wait=True,
+            )
+
+        idx = cls(client=client, docs=docs, vectors=vectors,
+                  embedder=searcher.embedder, collection=collection)
         idx._id_of = {d["doc_id"]: i for i, d in enumerate(docs)}
         return idx
 
@@ -134,7 +140,7 @@ class FilteredIndex:
         qv = self.embed(query)
         t0 = time.perf_counter()
         hits = self.client.query_points(
-            collection_name=FILTERED_COLLECTION, query=qv.tolist(), limit=fetch_k
+            collection_name=self.collection, query=qv.tolist(), limit=fetch_k
         ).points
         kept = [h.payload["doc_id"] for h in hits if predicate(h.payload)][:k]
         return Result("post-filter", kept, (time.perf_counter() - t0) * 1000, fetched=len(hits))
@@ -147,12 +153,12 @@ class FilteredIndex:
         n = sum(1 for d in self.docs if predicate(d))
         return Result("pre-filter", ids, (time.perf_counter() - t0) * 1000, fetched=n)
 
-    def filtered_ann(self, query: str, qfilter: models.Filter, k: int = 10) -> Result:
+    def filtered_ann(self, query: str, qfilter: models.Filter | None, k: int = 10) -> Result:
         """Hand the filter to the engine and let it stay inside the index."""
         qv = self.embed(query)
         t0 = time.perf_counter()
         hits = self.client.query_points(
-            collection_name=FILTERED_COLLECTION,
+            collection_name=self.collection,
             query=qv.tolist(),
             query_filter=qfilter,
             limit=k,

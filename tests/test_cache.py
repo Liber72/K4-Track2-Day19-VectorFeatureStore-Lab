@@ -65,3 +65,22 @@ def test_stats_track_hits_and_misses(embedder):
     c.get("acme", "cách nướng bánh mì")
     assert c.stats.hits == 1 and c.stats.misses == 1
     assert 0.0 < c.stats.hit_rate < 1.0
+
+
+def test_new_cache_on_shared_client_keeps_previous_entries(embedder):
+    client = QdrantClient(":memory:")
+    first = SemanticCache(client=client, embedder=embedder)
+    first.put("acme", "câu hỏi của cache A", "A")
+    second = SemanticCache(client=client, embedder=embedder)
+    second.put("acme", "câu hỏi của cache B", "B")
+    assert first.collection != second.collection
+    assert first.get("acme", "câu hỏi của cache A").answer == "A"
+    assert second.get("acme", "câu hỏi của cache B").answer == "B"
+
+
+def test_ttl_expires_at_exact_boundary(embedder):
+    cache = make(embedder, ttl_s=1800)
+    cache.put("acme", "câu hỏi hết hạn", "A")
+    cache.advance(1800)
+    assert cache.get("acme", "câu hỏi hết hạn") is None
+    assert cache.stats.stale_evictions == 1

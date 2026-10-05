@@ -40,6 +40,18 @@ def test_use_filters_false_emits_no_filters():
     assert all(a.topic is None and a.since_year is None for a in plan)
 
 
+def test_three_intents_receive_the_entire_budget():
+    plan = RuleBasedPlanner(budget=16).plan("cân bằng tải; bảo mật dữ liệu; tối ưu truy vấn")
+    assert len(plan) == 3
+    assert sum(args.top_k for args in plan) == 16
+
+
+def test_more_intents_than_slots_preserves_question_without_overspending():
+    plan = RuleBasedPlanner(budget=2).plan("cân bằng tải; bảo mật dữ liệu; tối ưu truy vấn")
+    assert sum(args.top_k for args in plan) == 2
+    assert "tối ưu truy vấn" in " ".join(args.query for args in plan)
+
+
 def test_agent_relaxes_a_starving_filter(index):
     tool = RetrievalTool(index)
 

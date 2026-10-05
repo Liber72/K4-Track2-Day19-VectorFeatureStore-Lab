@@ -131,6 +131,9 @@ make container-down ARGS=--wipe   # dừng + xoá volume
 
 ### Khối nâng cao (NB5–NB8) — theo bản deck mở rộng 2026
 
+Windows/Docker: xem [hướng dẫn chạy NB5–NB8](submission/ADVANCED_RUN_GUIDE.md)
+để mở notebook, đọc tiêu chí, lưu kết quả và chụp ảnh.
+
 | Notebook | Skill | Slide | Pass when… |
 |---|---|---|---|
 | `05_filtered_search` | post-filter vs pre-filter vs filtered-ANN, đo recall theo độ chọn lọc | §3 Filtered Search | post-filter sập ở filter ~4%; filtered-ANN giữ recall 1.00 |

@@ -68,6 +68,30 @@ def test_in_fold_encoding_covers_every_row(events):
     assert not enc.isna().any()
 
 
+def test_in_fold_fallback_does_not_see_held_out_labels():
+    frame = pd.DataFrame({"key": [f"unique_{i}" for i in range(100)],
+                          "clicked": [i % 2 for i in range(100)]})
+    folds = np.random.default_rng(42).integers(0, 5, size=len(frame))
+    held_out = folds == 0
+    changed = frame.copy()
+    changed.loc[held_out, "clicked"] = 1 - changed.loc[held_out, "clicked"]
+    before = target_encode_in_fold(frame, "key", "clicked", seed=42)
+    after = target_encode_in_fold(changed, "key", "clicked", seed=42)
+    pd.testing.assert_series_equal(before.loc[held_out], after.loc[held_out])
+
+
+def test_window_counts_keep_subsecond_precision_and_exclude_same_timestamp():
+    frame = pd.DataFrame({
+        "user_id": ["u_001"] * 3, "topic": ["cloud"] * 3,
+        "query_len": [4, 5, 6], "clicked": [0, 1, 0],
+        "event_timestamp": pd.to_datetime([
+            "2026-07-01T00:00:00.100Z", "2026-07-01T00:00:00.100Z",
+            "2026-07-01T00:00:00.900Z",
+        ]),
+    })
+    assert window_aggregates(frame)["searches_1h"].tolist() == [0, 0, 2]
+
+
 def test_pit_join_never_sees_the_future(events):
     fe = events[["user_id", "event_timestamp"]].copy().sort_values("event_timestamp")
     fe["feature_value"] = fe.groupby("user_id").cumcount() + 1

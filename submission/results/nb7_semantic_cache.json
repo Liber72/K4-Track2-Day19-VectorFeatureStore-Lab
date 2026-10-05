@@ -1,0 +1,1383 @@
+{
+  "measured_at": "2026-10-05T18:39:00.839805+00:00",
+  "started_at": "2026-10-05T18:38:14.149647+00:00",
+  "python": "D:\\AI_Thucchien\\K4-Track2-Day19-VectorFeatureStore-Lab\\.venv\\Scripts\\python.exe",
+  "status": "passed",
+  "notebook": "NB7",
+  "model": "BAAI/bge-m3",
+  "dim": 1024,
+  "basic": [
+    {
+      "query": "làm sao tối ưu chi phí cloud",
+      "hit": true,
+      "score": 1.000000050070597
+    },
+    {
+      "query": "cách giảm chi phí hạ tầng đám mây",
+      "hit": true,
+      "score": 0.8216891974681152
+    },
+    {
+      "query": "cách kiểm thử unit test",
+      "hit": false,
+      "score": null
+    }
+  ],
+  "sweep": [
+    {
+      "threshold": 0.6,
+      "correct_savings": 0.5,
+      "wrong_answer_rate": 0.02,
+      "hit_rate": 0.52,
+      "wrong_given_hit": 0.038461538461538464,
+      "positive_hit_rate": 1.0,
+      "negative_false_hit_rate": 0.04,
+      "wrong_positive_count": 0,
+      "accepted": 78
+    },
+    {
+      "threshold": 0.7,
+      "correct_savings": 0.5,
+      "wrong_answer_rate": 0.0,
+      "hit_rate": 0.5,
+      "wrong_given_hit": 0.0,
+      "positive_hit_rate": 1.0,
+      "negative_false_hit_rate": 0.0,
+      "wrong_positive_count": 0,
+      "accepted": 75
+    },
+    {
+      "threshold": 0.75,
+      "correct_savings": 0.5,
+      "wrong_answer_rate": 0.0,
+      "hit_rate": 0.5,
+      "wrong_given_hit": 0.0,
+      "positive_hit_rate": 1.0,
+      "negative_false_hit_rate": 0.0,
+      "wrong_positive_count": 0,
+      "accepted": 75
+    },
+    {
+      "threshold": 0.8,
+      "correct_savings": 0.49333333333333335,
+      "wrong_answer_rate": 0.0,
+      "hit_rate": 0.49333333333333335,
+      "wrong_given_hit": 0.0,
+      "positive_hit_rate": 0.9866666666666667,
+      "negative_false_hit_rate": 0.0,
+      "wrong_positive_count": 0,
+      "accepted": 74
+    },
+    {
+      "threshold": 0.85,
+      "correct_savings": 0.47333333333333333,
+      "wrong_answer_rate": 0.0,
+      "hit_rate": 0.47333333333333333,
+      "wrong_given_hit": 0.0,
+      "positive_hit_rate": 0.9466666666666667,
+      "negative_false_hit_rate": 0.0,
+      "wrong_positive_count": 0,
+      "accepted": 71
+    },
+    {
+      "threshold": 0.9,
+      "correct_savings": 0.4066666666666667,
+      "wrong_answer_rate": 0.0,
+      "hit_rate": 0.4066666666666667,
+      "wrong_given_hit": 0.0,
+      "positive_hit_rate": 0.8133333333333334,
+      "negative_false_hit_rate": 0.0,
+      "wrong_positive_count": 0,
+      "accepted": 61
+    },
+    {
+      "threshold": 0.95,
+      "correct_savings": 0.08666666666666667,
+      "wrong_answer_rate": 0.0,
+      "hit_rate": 0.08666666666666667,
+      "wrong_given_hit": 0.0,
+      "positive_hit_rate": 0.17333333333333334,
+      "negative_false_hit_rate": 0.0,
+      "wrong_positive_count": 0,
+      "accepted": 13
+    },
+    {
+      "threshold": 0.98,
+      "correct_savings": 0.0,
+      "wrong_answer_rate": 0.0,
+      "hit_rate": 0.0,
+      "wrong_given_hit": 0.0,
+      "positive_hit_rate": 0.0,
+      "negative_false_hit_rate": 0.0,
+      "wrong_positive_count": 0,
+      "accepted": 0
+    },
+    {
+      "threshold": 0.99,
+      "correct_savings": 0.0,
+      "wrong_answer_rate": 0.0,
+      "hit_rate": 0.0,
+      "wrong_given_hit": 0.0,
+      "positive_hit_rate": 0.0,
+      "negative_false_hit_rate": 0.0,
+      "wrong_positive_count": 0,
+      "accepted": 0
+    },
+    {
+      "threshold": 1.0,
+      "correct_savings": 0.0,
+      "wrong_answer_rate": 0.0,
+      "hit_rate": 0.0,
+      "wrong_given_hit": 0.0,
+      "positive_hit_rate": 0.0,
+      "negative_false_hit_rate": 0.0,
+      "wrong_positive_count": 0,
+      "accepted": 0
+    }
+  ],
+  "probes": [
+    {
+      "group": "warm",
+      "query_id": "q_000",
+      "query": "cho tôi hỏi Kubernetes auto-scaling cho production",
+      "score": 0.9409591356486683,
+      "matched_answer": "ANSWER::q_000",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_000",
+      "query": "Kubernetes auto-scaling cho production, giải thích giúp tôi",
+      "score": 0.9364774907405935,
+      "matched_answer": "ANSWER::q_000",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_000",
+      "query": "vui lòng giải thích: Kubernetes auto-scaling cho production",
+      "score": 0.9310369164781199,
+      "matched_answer": "ANSWER::q_000",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_002",
+      "query": "cho tôi hỏi PostgreSQL replication sharding",
+      "score": 0.8986910233916807,
+      "matched_answer": "ANSWER::q_002",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_002",
+      "query": "PostgreSQL replication sharding, giải thích giúp tôi",
+      "score": 0.9048782994215716,
+      "matched_answer": "ANSWER::q_002",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_002",
+      "query": "vui lòng giải thích: PostgreSQL replication sharding",
+      "score": 0.9084786604230556,
+      "matched_answer": "ANSWER::q_002",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_004",
+      "query": "cho tôi hỏi Terraform GitOps blue-green canary",
+      "score": 0.9134557896200545,
+      "matched_answer": "ANSWER::q_004",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_004",
+      "query": "Terraform GitOps blue-green canary, giải thích giúp tôi",
+      "score": 0.9204221713642999,
+      "matched_answer": "ANSWER::q_004",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_004",
+      "query": "vui lòng giải thích: Terraform GitOps blue-green canary",
+      "score": 0.9237634033457514,
+      "matched_answer": "ANSWER::q_004",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_006",
+      "query": "cho tôi hỏi React Redux service worker PWA",
+      "score": 0.8953175927291308,
+      "matched_answer": "ANSWER::q_006",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_006",
+      "query": "React Redux service worker PWA, giải thích giúp tôi",
+      "score": 0.914765209334309,
+      "matched_answer": "ANSWER::q_006",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_006",
+      "query": "vui lòng giải thích: React Redux service worker PWA",
+      "score": 0.9277406452352381,
+      "matched_answer": "ANSWER::q_006",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_008",
+      "query": "cho tôi hỏi Kafka Flink Iceberg Delta Lake CDC",
+      "score": 0.8932705524831756,
+      "matched_answer": "ANSWER::q_008",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_008",
+      "query": "Kafka Flink Iceberg Delta Lake CDC, giải thích giúp tôi",
+      "score": 0.8830352860207219,
+      "matched_answer": "ANSWER::q_008",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_008",
+      "query": "vui lòng giải thích: Kafka Flink Iceberg Delta Lake CDC",
+      "score": 0.8840194416988121,
+      "matched_answer": "ANSWER::q_008",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_010",
+      "query": "cho tôi hỏi Lambda serverless container Kubernetes",
+      "score": 0.7885777060648981,
+      "matched_answer": "ANSWER::q_010",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_010",
+      "query": "Lambda serverless container Kubernetes, giải thích giúp tôi",
+      "score": 0.8028048077453134,
+      "matched_answer": "ANSWER::q_010",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_010",
+      "query": "vui lòng giải thích: Lambda serverless container Kubernetes",
+      "score": 0.8078725230488555,
+      "matched_answer": "ANSWER::q_010",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_012",
+      "query": "cho tôi hỏi MongoDB Redis transaction ACID",
+      "score": 0.8890882999122189,
+      "matched_answer": "ANSWER::q_012",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_012",
+      "query": "MongoDB Redis transaction ACID, giải thích giúp tôi",
+      "score": 0.9016506390549535,
+      "matched_answer": "ANSWER::q_012",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_012",
+      "query": "vui lòng giải thích: MongoDB Redis transaction ACID",
+      "score": 0.9243883668898374,
+      "matched_answer": "ANSWER::q_012",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_014",
+      "query": "cho tôi hỏi Prometheus Grafana CI/CD rollback",
+      "score": 0.8882950277408767,
+      "matched_answer": "ANSWER::q_014",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_014",
+      "query": "Prometheus Grafana CI/CD rollback, giải thích giúp tôi",
+      "score": 0.8787531837170022,
+      "matched_answer": "ANSWER::q_014",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_014",
+      "query": "vui lòng giải thích: Prometheus Grafana CI/CD rollback",
+      "score": 0.8967396113961963,
+      "matched_answer": "ANSWER::q_014",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_016",
+      "query": "cho tôi hỏi che giấu nội dung quan trọng khỏi kẻ xấu",
+      "score": 0.9038078227701626,
+      "matched_answer": "ANSWER::q_016",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_016",
+      "query": "che giấu nội dung quan trọng khỏi kẻ xấu, giải thích giúp tôi",
+      "score": 0.9143617613644976,
+      "matched_answer": "ANSWER::q_016",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_016",
+      "query": "vui lòng giải thích: che giấu nội dung quan trọng khỏi kẻ xấu",
+      "score": 0.918340749412458,
+      "matched_answer": "ANSWER::q_016",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_018",
+      "query": "cho tôi hỏi rút ngắn thời gian phản hồi giữa các nơi xa nhau",
+      "score": 0.905233019644412,
+      "matched_answer": "ANSWER::q_018",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_018",
+      "query": "rút ngắn thời gian phản hồi giữa các nơi xa nhau, giải thích giúp tôi",
+      "score": 0.9128204684372637,
+      "matched_answer": "ANSWER::q_018",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_018",
+      "query": "vui lòng giải thích: rút ngắn thời gian phản hồi giữa các nơi xa nhau",
+      "score": 0.9325859686679309,
+      "matched_answer": "ANSWER::q_018",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_020",
+      "query": "cho tôi hỏi lưu offline cache khi không có sóng wifi",
+      "score": 0.9778341975448687,
+      "matched_answer": "ANSWER::q_020",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_020",
+      "query": "lưu offline cache khi không có sóng wifi, giải thích giúp tôi",
+      "score": 0.9636178649098752,
+      "matched_answer": "ANSWER::q_020",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_020",
+      "query": "vui lòng giải thích: lưu offline cache khi không có sóng wifi",
+      "score": 0.961051387948684,
+      "matched_answer": "ANSWER::q_020",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_022",
+      "query": "cho tôi hỏi dịch vụ vẫn chạy được khi 1 service phụ thuộc gãy",
+      "score": 0.9633476602553526,
+      "matched_answer": "ANSWER::q_022",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_022",
+      "query": "dịch vụ vẫn chạy được khi 1 service phụ thuộc gãy, giải thích giúp tôi",
+      "score": 0.9701808004847016,
+      "matched_answer": "ANSWER::q_022",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_022",
+      "query": "vui lòng giải thích: dịch vụ vẫn chạy được khi 1 service phụ thuộc gãy",
+      "score": 0.9666845009571875,
+      "matched_answer": "ANSWER::q_022",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_024",
+      "query": "cho tôi hỏi đo lường liệu trợ lý có bịa câu trả lời không",
+      "score": 0.9628986383926044,
+      "matched_answer": "ANSWER::q_024",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_024",
+      "query": "đo lường liệu trợ lý có bịa câu trả lời không, giải thích giúp tôi",
+      "score": 0.9752906452428984,
+      "matched_answer": "ANSWER::q_024",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_024",
+      "query": "vui lòng giải thích: đo lường liệu trợ lý có bịa câu trả lời không",
+      "score": 0.9587827384088914,
+      "matched_answer": "ANSWER::q_024",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_026",
+      "query": "cho tôi hỏi nhận dạng đăng nhập từ vị trí lạ",
+      "score": 0.9464805474653839,
+      "matched_answer": "ANSWER::q_026",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_026",
+      "query": "nhận dạng đăng nhập từ vị trí lạ, giải thích giúp tôi",
+      "score": 0.9520155035835267,
+      "matched_answer": "ANSWER::q_026",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_026",
+      "query": "vui lòng giải thích: nhận dạng đăng nhập từ vị trí lạ",
+      "score": 0.9421663511267755,
+      "matched_answer": "ANSWER::q_026",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_028",
+      "query": "cho tôi hỏi phát hiện gói tin lạ chen vào",
+      "score": 0.9314758382707452,
+      "matched_answer": "ANSWER::q_028",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_028",
+      "query": "phát hiện gói tin lạ chen vào, giải thích giúp tôi",
+      "score": 0.9396497822768224,
+      "matched_answer": "ANSWER::q_028",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_028",
+      "query": "vui lòng giải thích: phát hiện gói tin lạ chen vào",
+      "score": 0.9373038358217717,
+      "matched_answer": "ANSWER::q_028",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_030",
+      "query": "cho tôi hỏi Kubernetes và cách tách biệt môi trường",
+      "score": 0.9395251432163646,
+      "matched_answer": "ANSWER::q_030",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_030",
+      "query": "Kubernetes và cách tách biệt môi trường, giải thích giúp tôi",
+      "score": 0.952817894913436,
+      "matched_answer": "ANSWER::q_030",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_030",
+      "query": "vui lòng giải thích: Kubernetes và cách tách biệt môi trường",
+      "score": 0.9380037352551105,
+      "matched_answer": "ANSWER::q_030",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_032",
+      "query": "cho tôi hỏi PostgreSQL và đảm bảo tính nhất quán",
+      "score": 0.8483960575636835,
+      "matched_answer": "ANSWER::q_032",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_032",
+      "query": "PostgreSQL và đảm bảo tính nhất quán, giải thích giúp tôi",
+      "score": 0.9238648458095078,
+      "matched_answer": "ANSWER::q_032",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_032",
+      "query": "vui lòng giải thích: PostgreSQL và đảm bảo tính nhất quán",
+      "score": 0.9245672878615612,
+      "matched_answer": "ANSWER::q_032",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_034",
+      "query": "cho tôi hỏi Terraform và infrastructure as code",
+      "score": 0.9357171420056246,
+      "matched_answer": "ANSWER::q_034",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_034",
+      "query": "Terraform và infrastructure as code, giải thích giúp tôi",
+      "score": 0.9364260568939029,
+      "matched_answer": "ANSWER::q_034",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_034",
+      "query": "vui lòng giải thích: Terraform và infrastructure as code",
+      "score": 0.9272330100447803,
+      "matched_answer": "ANSWER::q_034",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_036",
+      "query": "cho tôi hỏi React và Core Web Vitals tối ưu LCP",
+      "score": 0.9561502274935716,
+      "matched_answer": "ANSWER::q_036",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_036",
+      "query": "React và Core Web Vitals tối ưu LCP, giải thích giúp tôi",
+      "score": 0.9532366423564367,
+      "matched_answer": "ANSWER::q_036",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_036",
+      "query": "vui lòng giải thích: React và Core Web Vitals tối ưu LCP",
+      "score": 0.9449660293045454,
+      "matched_answer": "ANSWER::q_036",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_038",
+      "query": "cho tôi hỏi Spark và phân vùng theo ngày",
+      "score": 0.9464926086360389,
+      "matched_answer": "ANSWER::q_038",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_038",
+      "query": "Spark và phân vùng theo ngày, giải thích giúp tôi",
+      "score": 0.9374640694156791,
+      "matched_answer": "ANSWER::q_038",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_038",
+      "query": "vui lòng giải thích: Spark và phân vùng theo ngày",
+      "score": 0.937367479159436,
+      "matched_answer": "ANSWER::q_038",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_040",
+      "query": "cho tôi hỏi AWS Lambda và tối ưu chi phí",
+      "score": 0.9347029747225843,
+      "matched_answer": "ANSWER::q_040",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_040",
+      "query": "AWS Lambda và tối ưu chi phí, giải thích giúp tôi",
+      "score": 0.9355071223657083,
+      "matched_answer": "ANSWER::q_040",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_040",
+      "query": "vui lòng giải thích: AWS Lambda và tối ưu chi phí",
+      "score": 0.9227248954911423,
+      "matched_answer": "ANSWER::q_040",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_042",
+      "query": "cho tôi hỏi MongoDB và high-write workload",
+      "score": 0.9344146800946769,
+      "matched_answer": "ANSWER::q_042",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_042",
+      "query": "MongoDB và high-write workload, giải thích giúp tôi",
+      "score": 0.943904451590735,
+      "matched_answer": "ANSWER::q_042",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_042",
+      "query": "vui lòng giải thích: MongoDB và high-write workload",
+      "score": 0.9453718705881375,
+      "matched_answer": "ANSWER::q_042",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_044",
+      "query": "cho tôi hỏi Prometheus và giám sát log tập trung",
+      "score": 0.9197300017358359,
+      "matched_answer": "ANSWER::q_044",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_044",
+      "query": "Prometheus và giám sát log tập trung, giải thích giúp tôi",
+      "score": 0.9095674170133431,
+      "matched_answer": "ANSWER::q_044",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_044",
+      "query": "vui lòng giải thích: Prometheus và giám sát log tập trung",
+      "score": 0.9202488044189738,
+      "matched_answer": "ANSWER::q_044",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_046",
+      "query": "cho tôi hỏi TypeScript và quản lý state phức tạp",
+      "score": 0.9288997485334813,
+      "matched_answer": "ANSWER::q_046",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_046",
+      "query": "TypeScript và quản lý state phức tạp, giải thích giúp tôi",
+      "score": 0.9260057087711032,
+      "matched_answer": "ANSWER::q_046",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_046",
+      "query": "vui lòng giải thích: TypeScript và quản lý state phức tạp",
+      "score": 0.9220390867722529,
+      "matched_answer": "ANSWER::q_046",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_048",
+      "query": "cho tôi hỏi Kafka và schema evolution",
+      "score": 0.894950938486874,
+      "matched_answer": "ANSWER::q_048",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_048",
+      "query": "Kafka và schema evolution, giải thích giúp tôi",
+      "score": 0.9199105529213925,
+      "matched_answer": "ANSWER::q_048",
+      "correct": true
+    },
+    {
+      "group": "warm",
+      "query_id": "q_048",
+      "query": "vui lòng giải thích: Kafka và schema evolution",
+      "score": 0.9101515078158822,
+      "matched_answer": "ANSWER::q_048",
+      "correct": true
+    },
+    {
+      "group": "cold",
+      "query_id": "q_001",
+      "query": "cho tôi hỏi OAuth JWT zero-trust",
+      "score": 0.43962245855780197,
+      "matched_answer": "ANSWER::q_020",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_001",
+      "query": "OAuth JWT zero-trust, giải thích giúp tôi",
+      "score": 0.4259790743569465,
+      "matched_answer": "ANSWER::q_020",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_001",
+      "query": "vui lòng giải thích: OAuth JWT zero-trust",
+      "score": 0.42115843038391865,
+      "matched_answer": "ANSWER::q_020",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_003",
+      "query": "cho tôi hỏi BGP load balancer multi-region",
+      "score": 0.4879858075142357,
+      "matched_answer": "ANSWER::q_042",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_003",
+      "query": "BGP load balancer multi-region, giải thích giúp tôi",
+      "score": 0.5057857516077198,
+      "matched_answer": "ANSWER::q_042",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_003",
+      "query": "vui lòng giải thích: BGP load balancer multi-region",
+      "score": 0.5004774707896098,
+      "matched_answer": "ANSWER::q_042",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_005",
+      "query": "cho tôi hỏi React Native push notification offline-first",
+      "score": 0.5078245008791433,
+      "matched_answer": "ANSWER::q_020",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_005",
+      "query": "React Native push notification offline-first, giải thích giúp tôi",
+      "score": 0.5345855430606532,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_005",
+      "query": "vui lòng giải thích: React Native push notification offline-first",
+      "score": 0.5023493569374932,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_007",
+      "query": "cho tôi hỏi FastAPI gRPC GraphQL OpenAPI",
+      "score": 0.472887513882033,
+      "matched_answer": "ANSWER::q_032",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_007",
+      "query": "FastAPI gRPC GraphQL OpenAPI, giải thích giúp tôi",
+      "score": 0.48009132717358827,
+      "matched_answer": "ANSWER::q_032",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_007",
+      "query": "vui lòng giải thích: FastAPI gRPC GraphQL OpenAPI",
+      "score": 0.47579403866603087,
+      "matched_answer": "ANSWER::q_032",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_009",
+      "query": "cho tôi hỏi transformer fine-tuning RAG embedding",
+      "score": 0.4538540967721959,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_009",
+      "query": "transformer fine-tuning RAG embedding, giải thích giúp tôi",
+      "score": 0.4429010525121633,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_009",
+      "query": "vui lòng giải thích: transformer fine-tuning RAG embedding",
+      "score": 0.436769568816686,
+      "matched_answer": "ANSWER::q_044",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_011",
+      "query": "cho tôi hỏi TLS encryption penetration testing firewall",
+      "score": 0.4772070158219748,
+      "matched_answer": "ANSWER::q_026",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_011",
+      "query": "TLS encryption penetration testing firewall, giải thích giúp tôi",
+      "score": 0.5096735146827732,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_011",
+      "query": "vui lòng giải thích: TLS encryption penetration testing firewall",
+      "score": 0.5111271844106247,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_013",
+      "query": "cho tôi hỏi DNS CDN VPN throughput latency",
+      "score": 0.5070393062270168,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_013",
+      "query": "DNS CDN VPN throughput latency, giải thích giúp tôi",
+      "score": 0.49146598308248707,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_013",
+      "query": "vui lòng giải thích: DNS CDN VPN throughput latency",
+      "score": 0.47582041148820703,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_015",
+      "query": "cho tôi hỏi co giãn linh hoạt theo nhu cầu sử dụng",
+      "score": 0.4731854282665162,
+      "matched_answer": "ANSWER::q_024",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_015",
+      "query": "co giãn linh hoạt theo nhu cầu sử dụng, giải thích giúp tôi",
+      "score": 0.4779865551108532,
+      "matched_answer": "ANSWER::q_022",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_015",
+      "query": "vui lòng giải thích: co giãn linh hoạt theo nhu cầu sử dụng",
+      "score": 0.474179423638539,
+      "matched_answer": "ANSWER::q_022",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_017",
+      "query": "cho tôi hỏi tăng tốc tìm bản ghi bằng cấu trúc B-tree",
+      "score": 0.47507265097621576,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_017",
+      "query": "tăng tốc tìm bản ghi bằng cấu trúc B-tree, giải thích giúp tôi",
+      "score": 0.4702586455452125,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_017",
+      "query": "vui lòng giải thích: tăng tốc tìm bản ghi bằng cấu trúc B-tree",
+      "score": 0.47732271690018485,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_019",
+      "query": "cho tôi hỏi chạy kiểm thử trước khi gộp nhánh code",
+      "score": 0.5060077348234358,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_019",
+      "query": "chạy kiểm thử trước khi gộp nhánh code, giải thích giúp tôi",
+      "score": 0.5189396820426144,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_019",
+      "query": "vui lòng giải thích: chạy kiểm thử trước khi gộp nhánh code",
+      "score": 0.5077033215747264,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_021",
+      "query": "cho tôi hỏi tăng tốc render trang web cảm nhận mượt hơn",
+      "score": 0.5791701155872467,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_021",
+      "query": "tăng tốc render trang web cảm nhận mượt hơn, giải thích giúp tôi",
+      "score": 0.5753893570914279,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_021",
+      "query": "vui lòng giải thích: tăng tốc render trang web cảm nhận mượt hơn",
+      "score": 0.5735564424219397,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_023",
+      "query": "cho tôi hỏi chuyển sự kiện realtime từ OLTP sang analytics",
+      "score": 0.5259622473515084,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_023",
+      "query": "chuyển sự kiện realtime từ OLTP sang analytics, giải thích giúp tôi",
+      "score": 0.5313205069246594,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_023",
+      "query": "vui lòng giải thích: chuyển sự kiện realtime từ OLTP sang analytics",
+      "score": 0.5196138838376763,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_025",
+      "query": "cho tôi hỏi nhiều khách hàng chia sẻ chung một cluster",
+      "score": 0.5421611782615007,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_025",
+      "query": "nhiều khách hàng chia sẻ chung một cluster, giải thích giúp tôi",
+      "score": 0.55222423921007,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_025",
+      "query": "vui lòng giải thích: nhiều khách hàng chia sẻ chung một cluster",
+      "score": 0.5493913044538286,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_027",
+      "query": "cho tôi hỏi partition dữ liệu theo user_id tăng write throughput",
+      "score": 0.5372988231070513,
+      "matched_answer": "ANSWER::q_038",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_027",
+      "query": "partition dữ liệu theo user_id tăng write throughput, giải thích giúp tôi",
+      "score": 0.5149227121248595,
+      "matched_answer": "ANSWER::q_038",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_027",
+      "query": "vui lòng giải thích: partition dữ liệu theo user_id tăng write throughput",
+      "score": 0.520011333346261,
+      "matched_answer": "ANSWER::q_042",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_029",
+      "query": "cho tôi hỏi tự khôi phục bản cũ khi bản mới lỗi",
+      "score": 0.5015848186874932,
+      "matched_answer": "ANSWER::q_022",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_029",
+      "query": "tự khôi phục bản cũ khi bản mới lỗi, giải thích giúp tôi",
+      "score": 0.5150307261965026,
+      "matched_answer": "ANSWER::q_022",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_029",
+      "query": "vui lòng giải thích: tự khôi phục bản cũ khi bản mới lỗi",
+      "score": 0.5134501335362676,
+      "matched_answer": "ANSWER::q_022",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_031",
+      "query": "cho tôi hỏi OAuth và xác thực hai yếu tố",
+      "score": 0.5342583431045274,
+      "matched_answer": "ANSWER::q_032",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_031",
+      "query": "OAuth và xác thực hai yếu tố, giải thích giúp tôi",
+      "score": 0.5188866816883178,
+      "matched_answer": "ANSWER::q_032",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_031",
+      "query": "vui lòng giải thích: OAuth và xác thực hai yếu tố",
+      "score": 0.48759292405148646,
+      "matched_answer": "ANSWER::q_032",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_033",
+      "query": "cho tôi hỏi CDN edge cho streaming video độ trễ thấp",
+      "score": 0.5034015910205645,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_033",
+      "query": "CDN edge cho streaming video độ trễ thấp, giải thích giúp tôi",
+      "score": 0.5152816345633225,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_033",
+      "query": "vui lòng giải thích: CDN edge cho streaming video độ trễ thấp",
+      "score": 0.49718751646463355,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_035",
+      "query": "cho tôi hỏi Flutter offline-first và đồng bộ dữ liệu",
+      "score": 0.5201109745409689,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_035",
+      "query": "Flutter offline-first và đồng bộ dữ liệu, giải thích giúp tôi",
+      "score": 0.5330895391744198,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_035",
+      "query": "vui lòng giải thích: Flutter offline-first và đồng bộ dữ liệu",
+      "score": 0.4910784033159685,
+      "matched_answer": "ANSWER::q_018",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_037",
+      "query": "cho tôi hỏi FastAPI và rate limiting công bằng",
+      "score": 0.5284168749692413,
+      "matched_answer": "ANSWER::q_040",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_037",
+      "query": "FastAPI và rate limiting công bằng, giải thích giúp tôi",
+      "score": 0.5305110329234219,
+      "matched_answer": "ANSWER::q_040",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_037",
+      "query": "vui lòng giải thích: FastAPI và rate limiting công bằng",
+      "score": 0.49544959549027595,
+      "matched_answer": "ANSWER::q_040",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_039",
+      "query": "cho tôi hỏi LLM và phát hiện hallucination",
+      "score": 0.5149792432725159,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_039",
+      "query": "LLM và phát hiện hallucination, giải thích giúp tôi",
+      "score": 0.5171900996952895,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_039",
+      "query": "vui lòng giải thích: LLM và phát hiện hallucination",
+      "score": 0.5127730269885834,
+      "matched_answer": "ANSWER::q_028",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_041",
+      "query": "cho tôi hỏi encryption và bảo vệ dữ liệu nhạy cảm",
+      "score": 0.6348949721415305,
+      "matched_answer": "ANSWER::q_016",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_041",
+      "query": "encryption và bảo vệ dữ liệu nhạy cảm, giải thích giúp tôi",
+      "score": 0.6316094041326439,
+      "matched_answer": "ANSWER::q_016",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_041",
+      "query": "vui lòng giải thích: encryption và bảo vệ dữ liệu nhạy cảm",
+      "score": 0.6052329260593377,
+      "matched_answer": "ANSWER::q_016",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_043",
+      "query": "cho tôi hỏi HTTP và cân bằng tải multi-region",
+      "score": 0.5479639483349131,
+      "matched_answer": "ANSWER::q_042",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_043",
+      "query": "HTTP và cân bằng tải multi-region, giải thích giúp tôi",
+      "score": 0.557466500727263,
+      "matched_answer": "ANSWER::q_042",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_043",
+      "query": "vui lòng giải thích: HTTP và cân bằng tải multi-region",
+      "score": 0.5513253086159886,
+      "matched_answer": "ANSWER::q_042",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_045",
+      "query": "cho tôi hỏi Swift biometric authentication",
+      "score": 0.5268366284678987,
+      "matched_answer": "ANSWER::q_026",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_045",
+      "query": "Swift biometric authentication, giải thích giúp tôi",
+      "score": 0.5466704996441755,
+      "matched_answer": "ANSWER::q_026",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_045",
+      "query": "vui lòng giải thích: Swift biometric authentication",
+      "score": 0.5314445524112015,
+      "matched_answer": "ANSWER::q_026",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_047",
+      "query": "cho tôi hỏi gRPC và saga pattern phân tán",
+      "score": 0.505992283581708,
+      "matched_answer": "ANSWER::q_038",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_047",
+      "query": "gRPC và saga pattern phân tán, giải thích giúp tôi",
+      "score": 0.4877582521994582,
+      "matched_answer": "ANSWER::q_038",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_047",
+      "query": "vui lòng giải thích: gRPC và saga pattern phân tán",
+      "score": 0.4574508513817429,
+      "matched_answer": "ANSWER::q_038",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_049",
+      "query": "cho tôi hỏi BERT và tinh chỉnh trên domain",
+      "score": 0.5234739797067836,
+      "matched_answer": "ANSWER::q_032",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_049",
+      "query": "BERT và tinh chỉnh trên domain, giải thích giúp tôi",
+      "score": 0.5149017944941043,
+      "matched_answer": "ANSWER::q_032",
+      "correct": false
+    },
+    {
+      "group": "cold",
+      "query_id": "q_049",
+      "query": "vui lòng giải thích: BERT và tinh chỉnh trên domain",
+      "score": 0.49253417799277055,
+      "matched_answer": "ANSWER::q_032",
+      "correct": false
+    }
+  ],
+  "selected_threshold": {
+    "threshold": 0.75,
+    "correct_savings": 0.5,
+    "wrong_answer_rate": 0.0,
+    "hit_rate": 0.5,
+    "wrong_given_hit": 0.0,
+    "positive_hit_rate": 1.0,
+    "negative_false_hit_rate": 0.0,
+    "wrong_positive_count": 0,
+    "accepted": 75
+  },
+  "error_budget": 0.05,
+  "ttl": [
+    {
+      "elapsed_s": 0,
+      "hit": true
+    },
+    {
+      "elapsed_s": 600,
+      "hit": true
+    },
+    {
+      "elapsed_s": 1800,
+      "hit": false
+    },
+    {
+      "elapsed_s": 3600,
+      "hit": false
+    }
+  ],
+  "tenant_demo": {
+    "leaked_answer": "ACME_DEMO_ONLY: 4,2 tỷ VND.",
+    "safe_miss": true
+  },
+  "checks": {
+    "identical_query_hits": true,
+    "sweep_has_savings_and_errors": true,
+    "useful_threshold_within_error_budget": true,
+    "ttl_hit_then_expired": true,
+    "stale_entry_evicted": true,
+    "cross_tenant_leak_demonstrated": true,
+    "namespace_blocks_leak": true
+  }
+}

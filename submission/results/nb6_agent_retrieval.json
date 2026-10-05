@@ -1,0 +1,2954 @@
+{
+  "measured_at": "2026-10-05T18:34:03.399813+00:00",
+  "started_at": "2026-10-05T18:33:26.235607+00:00",
+  "python": "D:\\AI_Thucchien\\K4-Track2-Day19-VectorFeatureStore-Lab\\.venv\\Scripts\\python.exe",
+  "status": "passed",
+  "notebook": "NB6",
+  "model": "BAAI/bge-m3",
+  "dim": 1024,
+  "budget": 16,
+  "summary": [
+    {
+      "strategy": "single-shot",
+      "recall": 0.515625,
+      "balance": 0.10625,
+      "requested": 16.0,
+      "unique_docs": 16.0,
+      "calls": 1.0,
+      "ms": 204.6610416667439
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "recall": 0.9166666666666666,
+      "balance": 0.9265873015873014,
+      "requested": 16.0,
+      "unique_docs": 15.833333333333334,
+      "calls": 2.3333333333333335,
+      "ms": 375.5583416668742
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "recall": 0.8333333333333334,
+      "balance": 0.7599206349206349,
+      "requested": 16.0,
+      "unique_docs": 15.833333333333334,
+      "calls": 2.3333333333333335,
+      "ms": 376.4578666662904
+    }
+  ],
+  "per_query": [
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_000",
+      "recall": 0.625,
+      "balance": 0.25,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 186.405399999785,
+      "doc_ids": [
+        "cloud_045",
+        "cloud_053",
+        "cloud_040",
+        "cloud_094",
+        "cloud_064",
+        "cloud_036",
+        "cloud_072",
+        "cloud_022",
+        "cloud_091",
+        "cloud_000",
+        "cloud_008",
+        "cloud_087",
+        "cloud_005",
+        "cloud_016",
+        "networking_016",
+        "networking_097"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tự động mở rộng theo lưu lượng và cân bằng tải giữa nhiều region",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "cloud_045",
+            "cloud_053",
+            "cloud_040",
+            "cloud_094",
+            "cloud_064",
+            "cloud_036",
+            "cloud_072",
+            "cloud_022",
+            "cloud_091",
+            "cloud_000",
+            "cloud_008",
+            "cloud_087",
+            "cloud_005",
+            "cloud_016",
+            "networking_016",
+            "networking_097"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_001",
+      "recall": 0.5,
+      "balance": 0.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 164.72150000117836,
+      "doc_ids": [
+        "database_004",
+        "database_025",
+        "database_062",
+        "database_055",
+        "database_056",
+        "database_012",
+        "database_077",
+        "database_097",
+        "database_014",
+        "database_050",
+        "database_024",
+        "database_064",
+        "database_016",
+        "database_038",
+        "database_036",
+        "database_052"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "bảo vệ dữ liệu nhạy cảm khi lưu trữ và đảm bảo tính nhất quán giữa nhiều bản sao",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "database_004",
+            "database_025",
+            "database_062",
+            "database_055",
+            "database_056",
+            "database_012",
+            "database_077",
+            "database_097",
+            "database_014",
+            "database_050",
+            "database_024",
+            "database_064",
+            "database_016",
+            "database_038",
+            "database_036",
+            "database_052"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_002",
+      "recall": 0.5,
+      "balance": 0.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 230.92239999823505,
+      "doc_ids": [
+        "data_eng_023",
+        "data_eng_067",
+        "data_eng_055",
+        "data_eng_043",
+        "data_eng_063",
+        "data_eng_008",
+        "data_eng_079",
+        "data_eng_073",
+        "data_eng_094",
+        "data_eng_030",
+        "data_eng_076",
+        "data_eng_066",
+        "data_eng_003",
+        "data_eng_012",
+        "data_eng_057",
+        "data_eng_098"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tinh chỉnh mô hình trên domain cụ thể và xử lý sự kiện streaming với Kafka và Flink",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "data_eng_023",
+            "data_eng_067",
+            "data_eng_055",
+            "data_eng_043",
+            "data_eng_063",
+            "data_eng_008",
+            "data_eng_079",
+            "data_eng_073",
+            "data_eng_094",
+            "data_eng_030",
+            "data_eng_076",
+            "data_eng_066",
+            "data_eng_003",
+            "data_eng_012",
+            "data_eng_057",
+            "data_eng_098"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_003",
+      "recall": 0.75,
+      "balance": 0.5,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 238.2164999980887,
+      "doc_ids": [
+        "devops_000",
+        "devops_071",
+        "devops_043",
+        "devops_080",
+        "devops_018",
+        "devops_075",
+        "devops_059",
+        "devops_094",
+        "devops_004",
+        "backend_016",
+        "devops_082",
+        "backend_080",
+        "devops_068",
+        "backend_004",
+        "backend_017",
+        "backend_098"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "triển khai blue-green giảm rủi ro release và circuit breaker tránh cascading failure",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "devops_000",
+            "devops_071",
+            "devops_043",
+            "devops_080",
+            "devops_018",
+            "devops_075",
+            "devops_059",
+            "devops_094",
+            "devops_004",
+            "backend_016",
+            "devops_082",
+            "backend_080",
+            "devops_068",
+            "backend_004",
+            "backend_017",
+            "backend_098"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_004",
+      "recall": 0.5,
+      "balance": 0.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 237.8236000004108,
+      "doc_ids": [
+        "frontend_068",
+        "frontend_003",
+        "frontend_096",
+        "frontend_033",
+        "frontend_044",
+        "frontend_058",
+        "frontend_014",
+        "frontend_064",
+        "frontend_081",
+        "frontend_019",
+        "frontend_015",
+        "frontend_030",
+        "frontend_069",
+        "frontend_084",
+        "frontend_001",
+        "frontend_023"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tối ưu LCP và FID cho Core Web Vitals và tối ưu kích thước APK cho ứng dụng di động",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "frontend_068",
+            "frontend_003",
+            "frontend_096",
+            "frontend_033",
+            "frontend_044",
+            "frontend_058",
+            "frontend_014",
+            "frontend_064",
+            "frontend_081",
+            "frontend_019",
+            "frontend_015",
+            "frontend_030",
+            "frontend_069",
+            "frontend_084",
+            "frontend_001",
+            "frontend_023"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_005",
+      "recall": 0.5,
+      "balance": 0.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 229.6433999981673,
+      "doc_ids": [
+        "database_074",
+        "database_067",
+        "database_019",
+        "database_080",
+        "database_078",
+        "database_073",
+        "database_065",
+        "database_018",
+        "database_075",
+        "database_013",
+        "database_033",
+        "database_000",
+        "database_043",
+        "database_005",
+        "database_066",
+        "database_041"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tối ưu truy vấn với chỉ mục B-tree và tối ưu chi phí với spot instance",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "database_074",
+            "database_067",
+            "database_019",
+            "database_080",
+            "database_078",
+            "database_073",
+            "database_065",
+            "database_018",
+            "database_075",
+            "database_013",
+            "database_033",
+            "database_000",
+            "database_043",
+            "database_005",
+            "database_066",
+            "database_041"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_006",
+      "recall": 0.3125,
+      "balance": 0.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 207.58570000180043,
+      "doc_ids": [
+        "devops_006",
+        "devops_003",
+        "devops_060",
+        "devops_035",
+        "devops_005",
+        "devops_010",
+        "devops_051",
+        "devops_054",
+        "devops_007",
+        "devops_057",
+        "devops_072",
+        "devops_036",
+        "devops_079",
+        "devops_090",
+        "devops_086",
+        "devops_048"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tối ưu độ trễ end-to-end và rollback tự động khi error rate tăng",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "devops_006",
+            "devops_003",
+            "devops_060",
+            "devops_035",
+            "devops_005",
+            "devops_010",
+            "devops_051",
+            "devops_054",
+            "devops_007",
+            "devops_057",
+            "devops_072",
+            "devops_036",
+            "devops_079",
+            "devops_090",
+            "devops_086",
+            "devops_048"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_007",
+      "recall": 0.5625,
+      "balance": 0.125,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 192.39390000075218,
+      "doc_ids": [
+        "ai_ml_019",
+        "ai_ml_099",
+        "ai_ml_009",
+        "ai_ml_091",
+        "ai_ml_074",
+        "ai_ml_034",
+        "ai_ml_055",
+        "ai_ml_030",
+        "ai_ml_083",
+        "ai_ml_016",
+        "ai_ml_071",
+        "ai_ml_035",
+        "ai_ml_026",
+        "ai_ml_013",
+        "ai_ml_020",
+        "security_066"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "huấn luyện mô hình trên dataset lớn và xác thực hai yếu tố cho người dùng",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "ai_ml_019",
+            "ai_ml_099",
+            "ai_ml_009",
+            "ai_ml_091",
+            "ai_ml_074",
+            "ai_ml_034",
+            "ai_ml_055",
+            "ai_ml_030",
+            "ai_ml_083",
+            "ai_ml_016",
+            "ai_ml_071",
+            "ai_ml_035",
+            "ai_ml_026",
+            "ai_ml_013",
+            "ai_ml_020",
+            "security_066"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_008",
+      "recall": 0.5,
+      "balance": 0.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 178.097500000149,
+      "doc_ids": [
+        "backend_007",
+        "backend_085",
+        "backend_000",
+        "backend_005",
+        "backend_036",
+        "backend_054",
+        "backend_082",
+        "backend_022",
+        "backend_078",
+        "backend_081",
+        "backend_066",
+        "backend_014",
+        "backend_034",
+        "backend_068",
+        "backend_013",
+        "backend_062"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "thiết kế API idempotent cho retry an toàn và schema evolution không phá vỡ downstream",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "backend_007",
+            "backend_085",
+            "backend_000",
+            "backend_005",
+            "backend_036",
+            "backend_054",
+            "backend_082",
+            "backend_022",
+            "backend_078",
+            "backend_081",
+            "backend_066",
+            "backend_014",
+            "backend_034",
+            "backend_068",
+            "backend_013",
+            "backend_062"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_009",
+      "recall": 0.4375,
+      "balance": 0.4,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 176.41050000020186,
+      "doc_ids": [
+        "frontend_052",
+        "mobile_057",
+        "mobile_011",
+        "frontend_013",
+        "frontend_088",
+        "mobile_014",
+        "mobile_072",
+        "mobile_000",
+        "frontend_078",
+        "frontend_009",
+        "frontend_090",
+        "mobile_068",
+        "frontend_025",
+        "frontend_024",
+        "frontend_017",
+        "frontend_045"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "đồng bộ dữ liệu khi mất kết nối và tải lười component theo route",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "frontend_052",
+            "mobile_057",
+            "mobile_011",
+            "frontend_013",
+            "frontend_088",
+            "mobile_014",
+            "mobile_072",
+            "mobile_000",
+            "frontend_078",
+            "frontend_009",
+            "frontend_090",
+            "mobile_068",
+            "frontend_025",
+            "frontend_024",
+            "frontend_017",
+            "frontend_045"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_010",
+      "recall": 0.5,
+      "balance": 0.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 188.97750000178348,
+      "doc_ids": [
+        "devops_071",
+        "devops_080",
+        "devops_075",
+        "devops_000",
+        "devops_092",
+        "devops_059",
+        "devops_018",
+        "devops_068",
+        "devops_004",
+        "devops_085",
+        "devops_043",
+        "devops_096",
+        "devops_067",
+        "devops_094",
+        "devops_038",
+        "devops_082"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tách biệt môi trường dev và prod và triển khai blue-green giảm rủi ro release",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "devops_071",
+            "devops_080",
+            "devops_075",
+            "devops_000",
+            "devops_092",
+            "devops_059",
+            "devops_018",
+            "devops_068",
+            "devops_004",
+            "devops_085",
+            "devops_043",
+            "devops_096",
+            "devops_067",
+            "devops_094",
+            "devops_038",
+            "devops_082"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "single-shot",
+      "query_id": "mq_011",
+      "recall": 0.5,
+      "balance": 0.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 1,
+      "ms": 224.73460000037448,
+      "doc_ids": [
+        "data_eng_043",
+        "data_eng_023",
+        "data_eng_076",
+        "data_eng_066",
+        "data_eng_067",
+        "data_eng_057",
+        "data_eng_008",
+        "data_eng_003",
+        "data_eng_063",
+        "data_eng_073",
+        "data_eng_098",
+        "data_eng_055",
+        "data_eng_079",
+        "data_eng_094",
+        "data_eng_012",
+        "data_eng_030"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "xử lý sự kiện streaming với Kafka và Flink và tối ưu truy vấn với chỉ mục B-tree",
+            "top_k": 16
+          },
+          "doc_ids": [
+            "data_eng_043",
+            "data_eng_023",
+            "data_eng_076",
+            "data_eng_066",
+            "data_eng_067",
+            "data_eng_057",
+            "data_eng_008",
+            "data_eng_003",
+            "data_eng_063",
+            "data_eng_073",
+            "data_eng_098",
+            "data_eng_055",
+            "data_eng_079",
+            "data_eng_094",
+            "data_eng_012",
+            "data_eng_030"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_000",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 381.6925999999512,
+      "doc_ids": [
+        "cloud_053",
+        "cloud_045",
+        "cloud_072",
+        "cloud_022",
+        "cloud_064",
+        "cloud_040",
+        "cloud_094",
+        "cloud_008",
+        "networking_016",
+        "networking_063",
+        "networking_014",
+        "networking_067",
+        "networking_043",
+        "networking_097",
+        "networking_077",
+        "networking_058"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tự động mở rộng theo lưu lượng",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "cloud_053",
+            "cloud_045",
+            "cloud_072",
+            "cloud_022",
+            "cloud_064",
+            "cloud_040",
+            "cloud_094",
+            "cloud_008"
+          ]
+        },
+        {
+          "args": {
+            "query": "cân bằng tải giữa nhiều region",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "networking_016",
+            "networking_063",
+            "networking_014",
+            "networking_067",
+            "networking_043",
+            "networking_097",
+            "networking_077",
+            "networking_058"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_001",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 361.3230000009935,
+      "doc_ids": [
+        "security_030",
+        "security_079",
+        "security_056",
+        "security_017",
+        "security_044",
+        "security_068",
+        "security_008",
+        "security_038",
+        "database_025",
+        "database_077",
+        "database_004",
+        "database_097",
+        "database_038",
+        "database_055",
+        "database_012",
+        "database_050"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "bảo vệ dữ liệu nhạy cảm khi lưu trữ",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "security_030",
+            "security_079",
+            "security_056",
+            "security_017",
+            "security_044",
+            "security_068",
+            "security_008",
+            "security_038"
+          ]
+        },
+        {
+          "args": {
+            "query": "đảm bảo tính nhất quán giữa nhiều bản sao",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "database_025",
+            "database_077",
+            "database_004",
+            "database_097",
+            "database_038",
+            "database_055",
+            "database_012",
+            "database_050"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_002",
+      "recall": 0.8125,
+      "balance": 0.8571428571428571,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 3,
+      "ms": 449.56550000279094,
+      "doc_ids": [
+        "ai_ml_067",
+        "ai_ml_002",
+        "ai_ml_050",
+        "ai_ml_014",
+        "ai_ml_038",
+        "ai_ml_046",
+        "data_eng_003",
+        "data_eng_063",
+        "data_eng_076",
+        "data_eng_043",
+        "data_eng_073",
+        "data_eng_094",
+        "data_eng_066",
+        "data_eng_067",
+        "data_eng_057",
+        "data_eng_008"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tinh chỉnh mô hình trên domain cụ thể",
+            "top_k": 6
+          },
+          "doc_ids": [
+            "ai_ml_067",
+            "ai_ml_002",
+            "ai_ml_050",
+            "ai_ml_014",
+            "ai_ml_038",
+            "ai_ml_046"
+          ]
+        },
+        {
+          "args": {
+            "query": "xử lý sự kiện streaming với Kafka",
+            "top_k": 5
+          },
+          "doc_ids": [
+            "data_eng_003",
+            "data_eng_063",
+            "data_eng_076",
+            "data_eng_043",
+            "data_eng_073"
+          ]
+        },
+        {
+          "args": {
+            "query": "Flink",
+            "top_k": 5
+          },
+          "doc_ids": [
+            "data_eng_094",
+            "data_eng_066",
+            "data_eng_067",
+            "data_eng_057",
+            "data_eng_008"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_003",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 347.95540000050096,
+      "doc_ids": [
+        "devops_000",
+        "devops_080",
+        "devops_071",
+        "devops_075",
+        "devops_059",
+        "devops_004",
+        "devops_043",
+        "devops_094",
+        "backend_020",
+        "backend_004",
+        "backend_080",
+        "backend_096",
+        "backend_016",
+        "backend_028",
+        "backend_032",
+        "backend_017"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "triển khai blue-green giảm rủi ro release",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "devops_000",
+            "devops_080",
+            "devops_071",
+            "devops_075",
+            "devops_059",
+            "devops_004",
+            "devops_043",
+            "devops_094"
+          ]
+        },
+        {
+          "args": {
+            "query": "circuit breaker tránh cascading failure",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "backend_020",
+            "backend_004",
+            "backend_080",
+            "backend_096",
+            "backend_016",
+            "backend_028",
+            "backend_032",
+            "backend_017"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_004",
+      "recall": 0.6875,
+      "balance": 0.8333333333333334,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 3,
+      "ms": 460.0367000020924,
+      "doc_ids": [
+        "frontend_058",
+        "frontend_023",
+        "frontend_096",
+        "frontend_081",
+        "frontend_019",
+        "frontend_030",
+        "frontend_068",
+        "frontend_014",
+        "frontend_001",
+        "frontend_044",
+        "frontend_064",
+        "mobile_016",
+        "mobile_091",
+        "mobile_096",
+        "mobile_051",
+        "mobile_054"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tối ưu LCP",
+            "top_k": 6
+          },
+          "doc_ids": [
+            "frontend_058",
+            "frontend_023",
+            "frontend_096",
+            "frontend_081",
+            "frontend_019",
+            "frontend_030"
+          ]
+        },
+        {
+          "args": {
+            "query": "FID cho Core Web Vitals",
+            "top_k": 5
+          },
+          "doc_ids": [
+            "frontend_068",
+            "frontend_014",
+            "frontend_001",
+            "frontend_044",
+            "frontend_064"
+          ]
+        },
+        {
+          "args": {
+            "query": "tối ưu kích thước APK cho ứng dụng di động",
+            "top_k": 5
+          },
+          "doc_ids": [
+            "mobile_016",
+            "mobile_091",
+            "mobile_096",
+            "mobile_051",
+            "mobile_054"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_005",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 326.2274999979127,
+      "doc_ids": [
+        "database_019",
+        "database_074",
+        "database_075",
+        "database_067",
+        "database_065",
+        "database_078",
+        "database_033",
+        "database_005",
+        "cloud_044",
+        "cloud_088",
+        "cloud_023",
+        "cloud_026",
+        "cloud_011",
+        "cloud_066",
+        "cloud_078",
+        "cloud_020"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tối ưu truy vấn với chỉ mục B-tree",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "database_019",
+            "database_074",
+            "database_075",
+            "database_067",
+            "database_065",
+            "database_078",
+            "database_033",
+            "database_005"
+          ]
+        },
+        {
+          "args": {
+            "query": "tối ưu chi phí với spot instance",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "cloud_044",
+            "cloud_088",
+            "cloud_023",
+            "cloud_026",
+            "cloud_011",
+            "cloud_066",
+            "cloud_078",
+            "cloud_020"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_006",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 316.67389999711304,
+      "doc_ids": [
+        "networking_092",
+        "networking_062",
+        "networking_018",
+        "networking_031",
+        "networking_064",
+        "networking_011",
+        "networking_022",
+        "networking_034",
+        "devops_035",
+        "devops_007",
+        "devops_091",
+        "devops_036",
+        "devops_014",
+        "devops_060",
+        "devops_025",
+        "devops_079"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tối ưu độ trễ end-to-end",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "networking_092",
+            "networking_062",
+            "networking_018",
+            "networking_031",
+            "networking_064",
+            "networking_011",
+            "networking_022",
+            "networking_034"
+          ]
+        },
+        {
+          "args": {
+            "query": "rollback tự động khi error rate tăng",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "devops_035",
+            "devops_007",
+            "devops_091",
+            "devops_036",
+            "devops_014",
+            "devops_060",
+            "devops_025",
+            "devops_079"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_007",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 314.23610000274493,
+      "doc_ids": [
+        "ai_ml_019",
+        "ai_ml_091",
+        "ai_ml_071",
+        "ai_ml_083",
+        "ai_ml_020",
+        "ai_ml_026",
+        "ai_ml_074",
+        "ai_ml_016",
+        "security_013",
+        "security_077",
+        "security_081",
+        "security_066",
+        "security_046",
+        "security_020",
+        "security_021",
+        "security_035"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "huấn luyện mô hình trên dataset lớn",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "ai_ml_019",
+            "ai_ml_091",
+            "ai_ml_071",
+            "ai_ml_083",
+            "ai_ml_020",
+            "ai_ml_026",
+            "ai_ml_074",
+            "ai_ml_016"
+          ]
+        },
+        {
+          "args": {
+            "query": "xác thực hai yếu tố cho người dùng",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "security_013",
+            "security_077",
+            "security_081",
+            "security_066",
+            "security_046",
+            "security_020",
+            "security_021",
+            "security_035"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_008",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 291.0615000000689,
+      "doc_ids": [
+        "backend_081",
+        "backend_022",
+        "backend_085",
+        "backend_034",
+        "backend_000",
+        "backend_068",
+        "backend_005",
+        "backend_036",
+        "data_eng_044",
+        "data_eng_029",
+        "data_eng_088",
+        "data_eng_038",
+        "data_eng_060",
+        "data_eng_075",
+        "data_eng_050",
+        "data_eng_083"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "thiết kế API idempotent cho retry an toàn",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "backend_081",
+            "backend_022",
+            "backend_085",
+            "backend_034",
+            "backend_000",
+            "backend_068",
+            "backend_005",
+            "backend_036"
+          ]
+        },
+        {
+          "args": {
+            "query": "schema evolution không phá vỡ downstream",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "data_eng_044",
+            "data_eng_029",
+            "data_eng_088",
+            "data_eng_038",
+            "data_eng_060",
+            "data_eng_075",
+            "data_eng_050",
+            "data_eng_083"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_009",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 314.48709999676794,
+      "doc_ids": [
+        "mobile_000",
+        "mobile_027",
+        "mobile_058",
+        "mobile_072",
+        "mobile_089",
+        "mobile_057",
+        "mobile_014",
+        "mobile_011",
+        "frontend_005",
+        "frontend_052",
+        "frontend_078",
+        "frontend_098",
+        "frontend_028",
+        "frontend_041",
+        "frontend_059",
+        "frontend_076"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "đồng bộ dữ liệu khi mất kết nối",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "mobile_000",
+            "mobile_027",
+            "mobile_058",
+            "mobile_072",
+            "mobile_089",
+            "mobile_057",
+            "mobile_014",
+            "mobile_011"
+          ]
+        },
+        {
+          "args": {
+            "query": "tải lười component theo route",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "frontend_005",
+            "frontend_052",
+            "frontend_078",
+            "frontend_098",
+            "frontend_028",
+            "frontend_041",
+            "frontend_059",
+            "frontend_076"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_010",
+      "recall": 0.75,
+      "balance": 0.7142857142857143,
+      "requested": 16,
+      "unique_docs": 14,
+      "calls": 3,
+      "ms": 458.04059999863966,
+      "doc_ids": [
+        "cloud_050",
+        "cloud_047",
+        "cloud_081",
+        "cloud_014",
+        "cloud_052",
+        "cloud_039",
+        "cloud_009",
+        "cloud_057",
+        "cloud_054",
+        "devops_000",
+        "devops_080",
+        "devops_071",
+        "devops_075",
+        "devops_059"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tách biệt môi trường dev",
+            "top_k": 6
+          },
+          "doc_ids": [
+            "cloud_050",
+            "cloud_047",
+            "cloud_081",
+            "cloud_014",
+            "cloud_052",
+            "cloud_039"
+          ]
+        },
+        {
+          "args": {
+            "query": "prod",
+            "top_k": 5
+          },
+          "doc_ids": [
+            "cloud_039",
+            "cloud_009",
+            "cloud_057",
+            "cloud_050",
+            "cloud_054"
+          ]
+        },
+        {
+          "args": {
+            "query": "triển khai blue-green giảm rủi ro release",
+            "top_k": 5
+          },
+          "doc_ids": [
+            "devops_000",
+            "devops_080",
+            "devops_071",
+            "devops_075",
+            "devops_059"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (no filter)",
+      "query_id": "mq_011",
+      "recall": 0.75,
+      "balance": 0.7142857142857143,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 3,
+      "ms": 485.40020000291406,
+      "doc_ids": [
+        "data_eng_003",
+        "data_eng_063",
+        "data_eng_076",
+        "data_eng_043",
+        "data_eng_073",
+        "data_eng_055",
+        "data_eng_094",
+        "data_eng_066",
+        "data_eng_067",
+        "data_eng_057",
+        "data_eng_008",
+        "database_019",
+        "database_074",
+        "database_075",
+        "database_067",
+        "database_065"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "xử lý sự kiện streaming với Kafka",
+            "top_k": 6
+          },
+          "doc_ids": [
+            "data_eng_003",
+            "data_eng_063",
+            "data_eng_076",
+            "data_eng_043",
+            "data_eng_073",
+            "data_eng_055"
+          ]
+        },
+        {
+          "args": {
+            "query": "Flink",
+            "top_k": 5
+          },
+          "doc_ids": [
+            "data_eng_094",
+            "data_eng_066",
+            "data_eng_067",
+            "data_eng_057",
+            "data_eng_008"
+          ]
+        },
+        {
+          "args": {
+            "query": "tối ưu truy vấn với chỉ mục B-tree",
+            "top_k": 5
+          },
+          "doc_ids": [
+            "database_019",
+            "database_074",
+            "database_075",
+            "database_067",
+            "database_065"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_000",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 371.35859999762033,
+      "doc_ids": [
+        "cloud_053",
+        "cloud_045",
+        "cloud_072",
+        "cloud_022",
+        "cloud_064",
+        "cloud_040",
+        "cloud_094",
+        "cloud_008",
+        "networking_016",
+        "networking_063",
+        "networking_014",
+        "networking_067",
+        "networking_043",
+        "networking_097",
+        "networking_077",
+        "networking_058"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tự động mở rộng theo lưu lượng",
+            "top_k": 8,
+            "topic": "cloud"
+          },
+          "doc_ids": [
+            "cloud_053",
+            "cloud_045",
+            "cloud_072",
+            "cloud_022",
+            "cloud_064",
+            "cloud_040",
+            "cloud_094",
+            "cloud_008"
+          ]
+        },
+        {
+          "args": {
+            "query": "cân bằng tải giữa nhiều region",
+            "top_k": 8,
+            "topic": "networking"
+          },
+          "doc_ids": [
+            "networking_016",
+            "networking_063",
+            "networking_014",
+            "networking_067",
+            "networking_043",
+            "networking_097",
+            "networking_077",
+            "networking_058"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_001",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 346.2325000000419,
+      "doc_ids": [
+        "security_030",
+        "security_079",
+        "security_056",
+        "security_017",
+        "security_044",
+        "security_068",
+        "security_008",
+        "security_038",
+        "database_025",
+        "database_077",
+        "database_004",
+        "database_097",
+        "database_038",
+        "database_055",
+        "database_012",
+        "database_050"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "bảo vệ dữ liệu nhạy cảm khi lưu trữ",
+            "top_k": 8,
+            "topic": "security"
+          },
+          "doc_ids": [
+            "security_030",
+            "security_079",
+            "security_056",
+            "security_017",
+            "security_044",
+            "security_068",
+            "security_008",
+            "security_038"
+          ]
+        },
+        {
+          "args": {
+            "query": "đảm bảo tính nhất quán giữa nhiều bản sao",
+            "top_k": 8,
+            "topic": "database"
+          },
+          "doc_ids": [
+            "database_025",
+            "database_077",
+            "database_004",
+            "database_097",
+            "database_038",
+            "database_055",
+            "database_012",
+            "database_050"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_002",
+      "recall": 0.8125,
+      "balance": 0.8571428571428571,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 3,
+      "ms": 458.102600001439,
+      "doc_ids": [
+        "ai_ml_067",
+        "ai_ml_002",
+        "ai_ml_050",
+        "ai_ml_014",
+        "ai_ml_038",
+        "ai_ml_046",
+        "data_eng_003",
+        "data_eng_063",
+        "data_eng_076",
+        "data_eng_043",
+        "data_eng_073",
+        "data_eng_094",
+        "data_eng_066",
+        "data_eng_067",
+        "data_eng_057",
+        "data_eng_008"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tinh chỉnh mô hình trên domain cụ thể",
+            "top_k": 6,
+            "topic": "ai_ml"
+          },
+          "doc_ids": [
+            "ai_ml_067",
+            "ai_ml_002",
+            "ai_ml_050",
+            "ai_ml_014",
+            "ai_ml_038",
+            "ai_ml_046"
+          ]
+        },
+        {
+          "args": {
+            "query": "xử lý sự kiện streaming với Kafka",
+            "top_k": 5,
+            "topic": "data_eng"
+          },
+          "doc_ids": [
+            "data_eng_003",
+            "data_eng_063",
+            "data_eng_076",
+            "data_eng_043",
+            "data_eng_073"
+          ]
+        },
+        {
+          "args": {
+            "query": "Flink",
+            "top_k": 5,
+            "topic": "data_eng"
+          },
+          "doc_ids": [
+            "data_eng_094",
+            "data_eng_066",
+            "data_eng_067",
+            "data_eng_057",
+            "data_eng_008"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_003",
+      "recall": 0.5,
+      "balance": 0.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 315.48929999917164,
+      "doc_ids": [
+        "devops_000",
+        "devops_080",
+        "devops_071",
+        "devops_075",
+        "devops_059",
+        "devops_004",
+        "devops_043",
+        "devops_094",
+        "ai_ml_039",
+        "ai_ml_024",
+        "ai_ml_090",
+        "ai_ml_061",
+        "ai_ml_052",
+        "ai_ml_010",
+        "ai_ml_047",
+        "ai_ml_022"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "triển khai blue-green giảm rủi ro release",
+            "top_k": 8,
+            "topic": "devops"
+          },
+          "doc_ids": [
+            "devops_000",
+            "devops_080",
+            "devops_071",
+            "devops_075",
+            "devops_059",
+            "devops_004",
+            "devops_043",
+            "devops_094"
+          ]
+        },
+        {
+          "args": {
+            "query": "circuit breaker tránh cascading failure",
+            "top_k": 8,
+            "topic": "ai_ml"
+          },
+          "doc_ids": [
+            "ai_ml_039",
+            "ai_ml_024",
+            "ai_ml_090",
+            "ai_ml_061",
+            "ai_ml_052",
+            "ai_ml_010",
+            "ai_ml_047",
+            "ai_ml_022"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_004",
+      "recall": 0.6875,
+      "balance": 0.8333333333333334,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 3,
+      "ms": 480.4716999969969,
+      "doc_ids": [
+        "frontend_058",
+        "frontend_023",
+        "frontend_096",
+        "frontend_081",
+        "frontend_019",
+        "frontend_030",
+        "frontend_068",
+        "frontend_014",
+        "frontend_001",
+        "frontend_044",
+        "frontend_064",
+        "mobile_016",
+        "mobile_091",
+        "mobile_096",
+        "mobile_051",
+        "mobile_054"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tối ưu LCP",
+            "top_k": 6,
+            "topic": "frontend"
+          },
+          "doc_ids": [
+            "frontend_058",
+            "frontend_023",
+            "frontend_096",
+            "frontend_081",
+            "frontend_019",
+            "frontend_030"
+          ]
+        },
+        {
+          "args": {
+            "query": "FID cho Core Web Vitals",
+            "top_k": 5,
+            "topic": "frontend"
+          },
+          "doc_ids": [
+            "frontend_068",
+            "frontend_014",
+            "frontend_001",
+            "frontend_044",
+            "frontend_064"
+          ]
+        },
+        {
+          "args": {
+            "query": "tối ưu kích thước APK cho ứng dụng di động",
+            "top_k": 5,
+            "topic": "mobile"
+          },
+          "doc_ids": [
+            "mobile_016",
+            "mobile_091",
+            "mobile_096",
+            "mobile_051",
+            "mobile_054"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_005",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 345.4301000019768,
+      "doc_ids": [
+        "database_019",
+        "database_074",
+        "database_075",
+        "database_067",
+        "database_065",
+        "database_078",
+        "database_033",
+        "database_005",
+        "cloud_044",
+        "cloud_088",
+        "cloud_023",
+        "cloud_026",
+        "cloud_011",
+        "cloud_066",
+        "cloud_078",
+        "cloud_020"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tối ưu truy vấn với chỉ mục B-tree",
+            "top_k": 8,
+            "topic": "database"
+          },
+          "doc_ids": [
+            "database_019",
+            "database_074",
+            "database_075",
+            "database_067",
+            "database_065",
+            "database_078",
+            "database_033",
+            "database_005"
+          ]
+        },
+        {
+          "args": {
+            "query": "tối ưu chi phí với spot instance",
+            "top_k": 8
+          },
+          "doc_ids": [
+            "cloud_044",
+            "cloud_088",
+            "cloud_023",
+            "cloud_026",
+            "cloud_011",
+            "cloud_066",
+            "cloud_078",
+            "cloud_020"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_006",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 294.3604999964009,
+      "doc_ids": [
+        "networking_092",
+        "networking_062",
+        "networking_018",
+        "networking_031",
+        "networking_064",
+        "networking_011",
+        "networking_022",
+        "networking_034",
+        "devops_035",
+        "devops_007",
+        "devops_091",
+        "devops_036",
+        "devops_014",
+        "devops_060",
+        "devops_025",
+        "devops_079"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tối ưu độ trễ end-to-end",
+            "top_k": 8,
+            "topic": "networking"
+          },
+          "doc_ids": [
+            "networking_092",
+            "networking_062",
+            "networking_018",
+            "networking_031",
+            "networking_064",
+            "networking_011",
+            "networking_022",
+            "networking_034"
+          ]
+        },
+        {
+          "args": {
+            "query": "rollback tự động khi error rate tăng",
+            "top_k": 8,
+            "topic": "devops"
+          },
+          "doc_ids": [
+            "devops_035",
+            "devops_007",
+            "devops_091",
+            "devops_036",
+            "devops_014",
+            "devops_060",
+            "devops_025",
+            "devops_079"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_007",
+      "recall": 0.5,
+      "balance": 0.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 317.2460999994655,
+      "doc_ids": [
+        "ai_ml_019",
+        "ai_ml_091",
+        "ai_ml_071",
+        "ai_ml_083",
+        "ai_ml_020",
+        "ai_ml_026",
+        "ai_ml_074",
+        "ai_ml_016",
+        "ai_ml_052",
+        "ai_ml_024",
+        "ai_ml_053",
+        "ai_ml_090",
+        "ai_ml_001",
+        "ai_ml_028",
+        "ai_ml_061",
+        "ai_ml_075"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "huấn luyện mô hình trên dataset lớn",
+            "top_k": 8,
+            "topic": "ai_ml"
+          },
+          "doc_ids": [
+            "ai_ml_019",
+            "ai_ml_091",
+            "ai_ml_071",
+            "ai_ml_083",
+            "ai_ml_020",
+            "ai_ml_026",
+            "ai_ml_074",
+            "ai_ml_016"
+          ]
+        },
+        {
+          "args": {
+            "query": "xác thực hai yếu tố cho người dùng",
+            "top_k": 8,
+            "topic": "ai_ml"
+          },
+          "doc_ids": [
+            "ai_ml_052",
+            "ai_ml_024",
+            "ai_ml_053",
+            "ai_ml_090",
+            "ai_ml_001",
+            "ai_ml_028",
+            "ai_ml_061",
+            "ai_ml_075"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_008",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 301.473999999871,
+      "doc_ids": [
+        "backend_081",
+        "backend_022",
+        "backend_085",
+        "backend_034",
+        "backend_000",
+        "backend_068",
+        "backend_005",
+        "backend_036",
+        "data_eng_044",
+        "data_eng_029",
+        "data_eng_088",
+        "data_eng_038",
+        "data_eng_060",
+        "data_eng_075",
+        "data_eng_050",
+        "data_eng_083"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "thiết kế API idempotent cho retry an toàn",
+            "top_k": 8,
+            "topic": "backend"
+          },
+          "doc_ids": [
+            "backend_081",
+            "backend_022",
+            "backend_085",
+            "backend_034",
+            "backend_000",
+            "backend_068",
+            "backend_005",
+            "backend_036"
+          ]
+        },
+        {
+          "args": {
+            "query": "schema evolution không phá vỡ downstream",
+            "top_k": 8,
+            "topic": "data_eng"
+          },
+          "doc_ids": [
+            "data_eng_044",
+            "data_eng_029",
+            "data_eng_088",
+            "data_eng_038",
+            "data_eng_060",
+            "data_eng_075",
+            "data_eng_050",
+            "data_eng_083"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_009",
+      "recall": 1.0,
+      "balance": 1.0,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 2,
+      "ms": 350.61900000073365,
+      "doc_ids": [
+        "mobile_000",
+        "mobile_027",
+        "mobile_058",
+        "mobile_072",
+        "mobile_089",
+        "mobile_057",
+        "mobile_014",
+        "mobile_011",
+        "frontend_005",
+        "frontend_052",
+        "frontend_078",
+        "frontend_098",
+        "frontend_028",
+        "frontend_041",
+        "frontend_059",
+        "frontend_076"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "đồng bộ dữ liệu khi mất kết nối",
+            "top_k": 8,
+            "topic": "mobile"
+          },
+          "doc_ids": [
+            "mobile_000",
+            "mobile_027",
+            "mobile_058",
+            "mobile_072",
+            "mobile_089",
+            "mobile_057",
+            "mobile_014",
+            "mobile_011"
+          ]
+        },
+        {
+          "args": {
+            "query": "tải lười component theo route",
+            "top_k": 8,
+            "topic": "frontend"
+          },
+          "doc_ids": [
+            "frontend_005",
+            "frontend_052",
+            "frontend_078",
+            "frontend_098",
+            "frontend_028",
+            "frontend_041",
+            "frontend_059",
+            "frontend_076"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_010",
+      "recall": 0.75,
+      "balance": 0.7142857142857143,
+      "requested": 16,
+      "unique_docs": 14,
+      "calls": 3,
+      "ms": 499.10040000031586,
+      "doc_ids": [
+        "cloud_050",
+        "cloud_047",
+        "cloud_081",
+        "cloud_014",
+        "cloud_052",
+        "cloud_039",
+        "cloud_009",
+        "cloud_057",
+        "cloud_054",
+        "devops_000",
+        "devops_080",
+        "devops_071",
+        "devops_075",
+        "devops_059"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "tách biệt môi trường dev",
+            "top_k": 6
+          },
+          "doc_ids": [
+            "cloud_050",
+            "cloud_047",
+            "cloud_081",
+            "cloud_014",
+            "cloud_052",
+            "cloud_039"
+          ]
+        },
+        {
+          "args": {
+            "query": "prod",
+            "top_k": 5
+          },
+          "doc_ids": [
+            "cloud_039",
+            "cloud_009",
+            "cloud_057",
+            "cloud_050",
+            "cloud_054"
+          ]
+        },
+        {
+          "args": {
+            "query": "triển khai blue-green giảm rủi ro release",
+            "top_k": 5,
+            "topic": "devops"
+          },
+          "doc_ids": [
+            "devops_000",
+            "devops_080",
+            "devops_071",
+            "devops_075",
+            "devops_059"
+          ]
+        }
+      ]
+    },
+    {
+      "strategy": "agentic (+filter)",
+      "query_id": "mq_011",
+      "recall": 0.75,
+      "balance": 0.7142857142857143,
+      "requested": 16,
+      "unique_docs": 16,
+      "calls": 3,
+      "ms": 437.6096000014513,
+      "doc_ids": [
+        "data_eng_003",
+        "data_eng_063",
+        "data_eng_076",
+        "data_eng_043",
+        "data_eng_073",
+        "data_eng_055",
+        "data_eng_094",
+        "data_eng_066",
+        "data_eng_067",
+        "data_eng_057",
+        "data_eng_008",
+        "database_019",
+        "database_074",
+        "database_075",
+        "database_067",
+        "database_065"
+      ],
+      "trace": [
+        {
+          "args": {
+            "query": "xử lý sự kiện streaming với Kafka",
+            "top_k": 6,
+            "topic": "data_eng"
+          },
+          "doc_ids": [
+            "data_eng_003",
+            "data_eng_063",
+            "data_eng_076",
+            "data_eng_043",
+            "data_eng_073",
+            "data_eng_055"
+          ]
+        },
+        {
+          "args": {
+            "query": "Flink",
+            "top_k": 5,
+            "topic": "data_eng"
+          },
+          "doc_ids": [
+            "data_eng_094",
+            "data_eng_066",
+            "data_eng_067",
+            "data_eng_057",
+            "data_eng_008"
+          ]
+        },
+        {
+          "args": {
+            "query": "tối ưu truy vấn với chỉ mục B-tree",
+            "top_k": 5,
+            "topic": "database"
+          },
+          "doc_ids": [
+            "database_019",
+            "database_074",
+            "database_075",
+            "database_067",
+            "database_065"
+          ]
+        }
+      ]
+    }
+  ],
+  "ground_truth": [
+    {
+      "query_id": "mq_000",
+      "question": "tự động mở rộng theo lưu lượng và cân bằng tải giữa nhiều region",
+      "sub_questions": [
+        "tự động mở rộng theo lưu lượng",
+        "cân bằng tải giữa nhiều region"
+      ],
+      "topics": [
+        "cloud",
+        "networking"
+      ],
+      "relevant_doc_ids": [
+        "cloud_008",
+        "cloud_022",
+        "cloud_040",
+        "cloud_045",
+        "cloud_053",
+        "cloud_064",
+        "cloud_072",
+        "cloud_094",
+        "networking_014",
+        "networking_016",
+        "networking_043",
+        "networking_058",
+        "networking_063",
+        "networking_067",
+        "networking_077",
+        "networking_097"
+      ],
+      "gold_a": [
+        "cloud_053",
+        "cloud_045",
+        "cloud_072",
+        "cloud_022",
+        "cloud_064",
+        "cloud_040",
+        "cloud_094",
+        "cloud_008"
+      ],
+      "gold_b": [
+        "networking_016",
+        "networking_063",
+        "networking_014",
+        "networking_067",
+        "networking_043",
+        "networking_097",
+        "networking_077",
+        "networking_058"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    },
+    {
+      "query_id": "mq_001",
+      "question": "bảo vệ dữ liệu nhạy cảm khi lưu trữ và đảm bảo tính nhất quán giữa nhiều bản sao",
+      "sub_questions": [
+        "bảo vệ dữ liệu nhạy cảm khi lưu trữ",
+        "đảm bảo tính nhất quán giữa nhiều bản sao"
+      ],
+      "topics": [
+        "security",
+        "database"
+      ],
+      "relevant_doc_ids": [
+        "database_004",
+        "database_012",
+        "database_025",
+        "database_038",
+        "database_050",
+        "database_055",
+        "database_077",
+        "database_097",
+        "security_008",
+        "security_017",
+        "security_030",
+        "security_038",
+        "security_044",
+        "security_056",
+        "security_068",
+        "security_079"
+      ],
+      "gold_a": [
+        "security_030",
+        "security_079",
+        "security_056",
+        "security_017",
+        "security_044",
+        "security_068",
+        "security_008",
+        "security_038"
+      ],
+      "gold_b": [
+        "database_025",
+        "database_077",
+        "database_004",
+        "database_097",
+        "database_038",
+        "database_055",
+        "database_012",
+        "database_050"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    },
+    {
+      "query_id": "mq_002",
+      "question": "tinh chỉnh mô hình trên domain cụ thể và xử lý sự kiện streaming với Kafka và Flink",
+      "sub_questions": [
+        "tinh chỉnh mô hình trên domain cụ thể",
+        "xử lý sự kiện streaming với Kafka và Flink"
+      ],
+      "topics": [
+        "ai_ml",
+        "data_eng"
+      ],
+      "relevant_doc_ids": [
+        "ai_ml_002",
+        "ai_ml_014",
+        "ai_ml_017",
+        "ai_ml_038",
+        "ai_ml_046",
+        "ai_ml_050",
+        "ai_ml_067",
+        "ai_ml_092",
+        "data_eng_003",
+        "data_eng_008",
+        "data_eng_043",
+        "data_eng_066",
+        "data_eng_067",
+        "data_eng_073",
+        "data_eng_076",
+        "data_eng_079"
+      ],
+      "gold_a": [
+        "ai_ml_067",
+        "ai_ml_002",
+        "ai_ml_050",
+        "ai_ml_014",
+        "ai_ml_038",
+        "ai_ml_046",
+        "ai_ml_092",
+        "ai_ml_017"
+      ],
+      "gold_b": [
+        "data_eng_076",
+        "data_eng_066",
+        "data_eng_067",
+        "data_eng_043",
+        "data_eng_003",
+        "data_eng_073",
+        "data_eng_079",
+        "data_eng_008"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    },
+    {
+      "query_id": "mq_003",
+      "question": "triển khai blue-green giảm rủi ro release và circuit breaker tránh cascading failure",
+      "sub_questions": [
+        "triển khai blue-green giảm rủi ro release",
+        "circuit breaker tránh cascading failure"
+      ],
+      "topics": [
+        "devops",
+        "backend"
+      ],
+      "relevant_doc_ids": [
+        "backend_004",
+        "backend_016",
+        "backend_017",
+        "backend_020",
+        "backend_028",
+        "backend_032",
+        "backend_080",
+        "backend_096",
+        "devops_000",
+        "devops_004",
+        "devops_043",
+        "devops_059",
+        "devops_071",
+        "devops_075",
+        "devops_080",
+        "devops_094"
+      ],
+      "gold_a": [
+        "devops_000",
+        "devops_080",
+        "devops_071",
+        "devops_075",
+        "devops_059",
+        "devops_004",
+        "devops_043",
+        "devops_094"
+      ],
+      "gold_b": [
+        "backend_020",
+        "backend_004",
+        "backend_080",
+        "backend_096",
+        "backend_016",
+        "backend_028",
+        "backend_032",
+        "backend_017"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    },
+    {
+      "query_id": "mq_004",
+      "question": "tối ưu LCP và FID cho Core Web Vitals và tối ưu kích thước APK cho ứng dụng di động",
+      "sub_questions": [
+        "tối ưu LCP và FID cho Core Web Vitals",
+        "tối ưu kích thước APK cho ứng dụng di động"
+      ],
+      "topics": [
+        "frontend",
+        "mobile"
+      ],
+      "relevant_doc_ids": [
+        "frontend_003",
+        "frontend_023",
+        "frontend_033",
+        "frontend_044",
+        "frontend_058",
+        "frontend_068",
+        "frontend_081",
+        "frontend_096",
+        "mobile_016",
+        "mobile_051",
+        "mobile_054",
+        "mobile_063",
+        "mobile_087",
+        "mobile_091",
+        "mobile_096",
+        "mobile_098"
+      ],
+      "gold_a": [
+        "frontend_068",
+        "frontend_096",
+        "frontend_003",
+        "frontend_044",
+        "frontend_058",
+        "frontend_081",
+        "frontend_023",
+        "frontend_033"
+      ],
+      "gold_b": [
+        "mobile_016",
+        "mobile_091",
+        "mobile_096",
+        "mobile_051",
+        "mobile_054",
+        "mobile_087",
+        "mobile_063",
+        "mobile_098"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    },
+    {
+      "query_id": "mq_005",
+      "question": "tối ưu truy vấn với chỉ mục B-tree và tối ưu chi phí với spot instance",
+      "sub_questions": [
+        "tối ưu truy vấn với chỉ mục B-tree",
+        "tối ưu chi phí với spot instance"
+      ],
+      "topics": [
+        "database",
+        "cloud"
+      ],
+      "relevant_doc_ids": [
+        "cloud_011",
+        "cloud_020",
+        "cloud_023",
+        "cloud_026",
+        "cloud_044",
+        "cloud_066",
+        "cloud_078",
+        "cloud_088",
+        "database_005",
+        "database_019",
+        "database_033",
+        "database_065",
+        "database_067",
+        "database_074",
+        "database_075",
+        "database_078"
+      ],
+      "gold_a": [
+        "database_019",
+        "database_074",
+        "database_075",
+        "database_067",
+        "database_065",
+        "database_078",
+        "database_033",
+        "database_005"
+      ],
+      "gold_b": [
+        "cloud_044",
+        "cloud_088",
+        "cloud_023",
+        "cloud_026",
+        "cloud_011",
+        "cloud_066",
+        "cloud_078",
+        "cloud_020"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    },
+    {
+      "query_id": "mq_006",
+      "question": "tối ưu độ trễ end-to-end và rollback tự động khi error rate tăng",
+      "sub_questions": [
+        "tối ưu độ trễ end-to-end",
+        "rollback tự động khi error rate tăng"
+      ],
+      "topics": [
+        "networking",
+        "devops"
+      ],
+      "relevant_doc_ids": [
+        "devops_007",
+        "devops_014",
+        "devops_025",
+        "devops_035",
+        "devops_036",
+        "devops_060",
+        "devops_079",
+        "devops_091",
+        "networking_011",
+        "networking_018",
+        "networking_022",
+        "networking_031",
+        "networking_034",
+        "networking_062",
+        "networking_064",
+        "networking_092"
+      ],
+      "gold_a": [
+        "networking_092",
+        "networking_062",
+        "networking_018",
+        "networking_031",
+        "networking_064",
+        "networking_011",
+        "networking_022",
+        "networking_034"
+      ],
+      "gold_b": [
+        "devops_035",
+        "devops_007",
+        "devops_091",
+        "devops_036",
+        "devops_014",
+        "devops_060",
+        "devops_025",
+        "devops_079"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    },
+    {
+      "query_id": "mq_007",
+      "question": "huấn luyện mô hình trên dataset lớn và xác thực hai yếu tố cho người dùng",
+      "sub_questions": [
+        "huấn luyện mô hình trên dataset lớn",
+        "xác thực hai yếu tố cho người dùng"
+      ],
+      "topics": [
+        "ai_ml",
+        "security"
+      ],
+      "relevant_doc_ids": [
+        "ai_ml_016",
+        "ai_ml_019",
+        "ai_ml_020",
+        "ai_ml_026",
+        "ai_ml_071",
+        "ai_ml_074",
+        "ai_ml_083",
+        "ai_ml_091",
+        "security_013",
+        "security_020",
+        "security_021",
+        "security_035",
+        "security_046",
+        "security_066",
+        "security_077",
+        "security_081"
+      ],
+      "gold_a": [
+        "ai_ml_019",
+        "ai_ml_091",
+        "ai_ml_071",
+        "ai_ml_083",
+        "ai_ml_020",
+        "ai_ml_026",
+        "ai_ml_074",
+        "ai_ml_016"
+      ],
+      "gold_b": [
+        "security_013",
+        "security_077",
+        "security_081",
+        "security_066",
+        "security_046",
+        "security_020",
+        "security_021",
+        "security_035"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    },
+    {
+      "query_id": "mq_008",
+      "question": "thiết kế API idempotent cho retry an toàn và schema evolution không phá vỡ downstream",
+      "sub_questions": [
+        "thiết kế API idempotent cho retry an toàn",
+        "schema evolution không phá vỡ downstream"
+      ],
+      "topics": [
+        "backend",
+        "data_eng"
+      ],
+      "relevant_doc_ids": [
+        "backend_000",
+        "backend_005",
+        "backend_022",
+        "backend_034",
+        "backend_036",
+        "backend_068",
+        "backend_081",
+        "backend_085",
+        "data_eng_029",
+        "data_eng_038",
+        "data_eng_044",
+        "data_eng_050",
+        "data_eng_060",
+        "data_eng_075",
+        "data_eng_083",
+        "data_eng_088"
+      ],
+      "gold_a": [
+        "backend_081",
+        "backend_022",
+        "backend_085",
+        "backend_034",
+        "backend_000",
+        "backend_068",
+        "backend_005",
+        "backend_036"
+      ],
+      "gold_b": [
+        "data_eng_044",
+        "data_eng_029",
+        "data_eng_088",
+        "data_eng_038",
+        "data_eng_060",
+        "data_eng_075",
+        "data_eng_050",
+        "data_eng_083"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    },
+    {
+      "query_id": "mq_009",
+      "question": "đồng bộ dữ liệu khi mất kết nối và tải lười component theo route",
+      "sub_questions": [
+        "đồng bộ dữ liệu khi mất kết nối",
+        "tải lười component theo route"
+      ],
+      "topics": [
+        "mobile",
+        "frontend"
+      ],
+      "relevant_doc_ids": [
+        "frontend_005",
+        "frontend_028",
+        "frontend_041",
+        "frontend_052",
+        "frontend_059",
+        "frontend_076",
+        "frontend_078",
+        "frontend_098",
+        "mobile_000",
+        "mobile_011",
+        "mobile_014",
+        "mobile_027",
+        "mobile_057",
+        "mobile_058",
+        "mobile_072",
+        "mobile_089"
+      ],
+      "gold_a": [
+        "mobile_000",
+        "mobile_027",
+        "mobile_058",
+        "mobile_072",
+        "mobile_089",
+        "mobile_057",
+        "mobile_014",
+        "mobile_011"
+      ],
+      "gold_b": [
+        "frontend_005",
+        "frontend_052",
+        "frontend_078",
+        "frontend_098",
+        "frontend_028",
+        "frontend_041",
+        "frontend_059",
+        "frontend_076"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    },
+    {
+      "query_id": "mq_010",
+      "question": "tách biệt môi trường dev và prod và triển khai blue-green giảm rủi ro release",
+      "sub_questions": [
+        "tách biệt môi trường dev và prod",
+        "triển khai blue-green giảm rủi ro release"
+      ],
+      "topics": [
+        "cloud",
+        "devops"
+      ],
+      "relevant_doc_ids": [
+        "cloud_009",
+        "cloud_035",
+        "cloud_039",
+        "cloud_047",
+        "cloud_050",
+        "cloud_052",
+        "cloud_054",
+        "cloud_057",
+        "devops_000",
+        "devops_004",
+        "devops_043",
+        "devops_059",
+        "devops_071",
+        "devops_075",
+        "devops_080",
+        "devops_094"
+      ],
+      "gold_a": [
+        "cloud_047",
+        "cloud_052",
+        "cloud_050",
+        "cloud_039",
+        "cloud_054",
+        "cloud_009",
+        "cloud_057",
+        "cloud_035"
+      ],
+      "gold_b": [
+        "devops_000",
+        "devops_080",
+        "devops_071",
+        "devops_075",
+        "devops_059",
+        "devops_004",
+        "devops_043",
+        "devops_094"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    },
+    {
+      "query_id": "mq_011",
+      "question": "xử lý sự kiện streaming với Kafka và Flink và tối ưu truy vấn với chỉ mục B-tree",
+      "sub_questions": [
+        "xử lý sự kiện streaming với Kafka và Flink",
+        "tối ưu truy vấn với chỉ mục B-tree"
+      ],
+      "topics": [
+        "data_eng",
+        "database"
+      ],
+      "relevant_doc_ids": [
+        "data_eng_003",
+        "data_eng_008",
+        "data_eng_043",
+        "data_eng_066",
+        "data_eng_067",
+        "data_eng_073",
+        "data_eng_076",
+        "data_eng_079",
+        "database_005",
+        "database_019",
+        "database_033",
+        "database_065",
+        "database_067",
+        "database_074",
+        "database_075",
+        "database_078"
+      ],
+      "gold_a": [
+        "data_eng_076",
+        "data_eng_066",
+        "data_eng_067",
+        "data_eng_043",
+        "data_eng_003",
+        "data_eng_073",
+        "data_eng_079",
+        "data_eng_008"
+      ],
+      "gold_b": [
+        "database_019",
+        "database_074",
+        "database_075",
+        "database_067",
+        "database_065",
+        "database_078",
+        "database_033",
+        "database_005"
+      ],
+      "embedding_model": "BAAI/bge-m3",
+      "embedding_dim": 1024
+    }
+  ],
+  "context": {
+    "user_id": "u_001",
+    "question": "làm sao tối ưu chi phí hạ tầng",
+    "features": {
+      "user_id": [
+        "u_001"
+      ],
+      "topic_affinity": [
+        "cloud"
+      ],
+      "preferred_language": [
+        "vi"
+      ]
+    },
+    "affinity_used": "cloud",
+    "doc_ids": [
+      "cloud_020",
+      "cloud_066",
+      "cloud_065",
+      "cloud_018",
+      "cloud_059",
+      "cloud_078",
+      "cloud_062",
+      "cloud_004"
+    ],
+    "tool_args": {
+      "query": "làm sao tối ưu chi phí hạ tầng",
+      "top_k": 8,
+      "topic": "cloud"
+    }
+  },
+  "reflection": [
+    {
+      "args": {
+        "query": "cân bằng tải giữa nhiều region",
+        "top_k": 8,
+        "topic": "networking",
+        "since_year": 2027
+      },
+      "doc_ids": []
+    },
+    {
+      "args": {
+        "query": "cân bằng tải giữa nhiều region",
+        "top_k": 8
+      },
+      "doc_ids": [
+        "networking_016",
+        "networking_063",
+        "networking_014",
+        "networking_067",
+        "networking_043",
+        "networking_097",
+        "networking_077",
+        "networking_058"
+      ]
+    }
+  ],
+  "checks": {
+    "all_strategies_request_16": true,
+    "agentic_beats_single_recall": true,
+    "agentic_beats_single_balance": true,
+    "inferred_filter_reduces_recall": true,
+    "reflection_recovers": true,
+    "feast_and_docs_present": true
+  }
+}

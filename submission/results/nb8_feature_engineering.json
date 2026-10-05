@@ -1,0 +1,140 @@
+{
+  "measured_at": "2026-10-05T18:39:26.716663+00:00",
+  "started_at": "2026-10-05T18:38:57.860639+00:00",
+  "python": "D:\\AI_Thucchien\\K4-Track2-Day19-VectorFeatureStore-Lab\\.venv\\Scripts\\python.exe",
+  "status": "passed",
+  "notebook": "NB8",
+  "seed": 42,
+  "n_events": 9019,
+  "honest_features": [
+    {
+      "feature": "searches_24h",
+      "train_auc": 0.5917063843453688,
+      "holdout_auc": 0.5798719241222119,
+      "gap": 0.011834460223156928
+    },
+    {
+      "feature": "searches_7d",
+      "train_auc": 0.6457617944832016,
+      "holdout_auc": 0.6655901405822929,
+      "gap": -0.019828346099091343
+    },
+    {
+      "feature": "seconds_since_last",
+      "train_auc": 0.4347948725211492,
+      "holdout_auc": 0.43465891589106603,
+      "gap": 0.00013595663008314496
+    }
+  ],
+  "session_leakage": [
+    {
+      "encoding": "frequency",
+      "train_auc": 0.5207494388075319,
+      "test_auc": 0.5159342272682783,
+      "gap": 0.004815211539253572
+    },
+    {
+      "encoding": "target-naive",
+      "train_auc": 0.9985907891022678,
+      "test_auc": 0.5216942350983654,
+      "gap": 0.4768965540039024
+    },
+    {
+      "encoding": "target-in-fold",
+      "train_auc": 0.5106282770693293,
+      "test_auc": 0.5216942350983654,
+      "gap": -0.011065958029036094
+    }
+  ],
+  "user_leakage": [
+    {
+      "encoding": "frequency",
+      "train_auc": 0.7264134760638875,
+      "test_auc": 0.7082955422879079,
+      "gap": 0.01811793377597959
+    },
+    {
+      "encoding": "target-naive",
+      "train_auc": 0.7492722851054194,
+      "test_auc": 0.6975419507792024,
+      "gap": 0.05173033432621699
+    },
+    {
+      "encoding": "target-in-fold",
+      "train_auc": 0.7135980217900877,
+      "test_auc": 0.6975419507792024,
+      "gap": 0.016056071010885242
+    }
+  ],
+  "pit_join": {
+    "rows": 3535,
+    "leaked_row_fraction": 0.9818953323903818,
+    "latest_auc": 0.7152538284948569,
+    "pit_auc": 0.5949139838420248,
+    "auc_difference": 0.1203398446528321
+  },
+  "on_demand": [
+    {
+      "user_id": "u_000",
+      "amount": 100000.0,
+      "avg_amount_7d": 3566076.21,
+      "amount_vs_avg": 0.028042025495579635,
+      "is_spike": 0
+    },
+    {
+      "user_id": "u_000",
+      "amount": 15000000.0,
+      "avg_amount_7d": 3566076.21,
+      "amount_vs_avg": 4.2063038243369455,
+      "is_spike": 1
+    },
+    {
+      "user_id": "u_001",
+      "amount": 250000.0,
+      "avg_amount_7d": 3718992.16,
+      "amount_vs_avg": 0.06722251331661855,
+      "is_spike": 0
+    }
+  ],
+  "feast_project": "lab19_odfv",
+  "commands": [
+    {
+      "args": [
+        "D:\\AI_Thucchien\\K4-Track2-Day19-VectorFeatureStore-Lab\\.venv\\Scripts\\python.exe",
+        "D:\\AI_Thucchien\\K4-Track2-Day19-VectorFeatureStore-Lab\\scripts\\gen_spend.py"
+      ],
+      "exit_code": 0,
+      "stdout": "wrote D:\\AI_Thucchien\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo_ondemand\\data\\user_spend.parquet (150 rows, 50 users)\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "D:\\AI_Thucchien\\K4-Track2-Day19-VectorFeatureStore-Lab\\.venv\\Scripts\\feast.exe",
+        "apply"
+      ],
+      "exit_code": 0,
+      "stdout": "No project found in the repository. Using project name lab19_odfv defined in feature_store.yaml\nApplying changes for project lab19_odfv\nCreated project lab19_odfv\nCreated entity user\nCreated feature view user_spend_stats\nCreated on demand feature view amount_vs_avg\n\nCreated sqlite table lab19_odfv_user_spend_stats\n\n",
+      "stderr": "D:\\AI_Thucchien\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo_ondemand\\definitions.py:28: DeprecationWarning: Entity value_type will be mandatory in the next release. Please specify a value_type for entity 'user'.\n  user = Entity(name=\"user\", join_keys=[\"user_id\"])\nD:\\AI_Thucchien\\K4-Track2-Day19-VectorFeatureStore-Lab\\.venv\\lib\\site-packages\\feast\\feature_store.py:1165: RuntimeWarning: On demand feature view is an experimental feature. This API is stable, but the functionality does not scale well for offline retrieval\n  warnings.warn(\nWARNING:root:Cannot use sqlite_vec for vector search\n"
+    },
+    {
+      "args": [
+        "D:\\AI_Thucchien\\K4-Track2-Day19-VectorFeatureStore-Lab\\.venv\\Scripts\\feast.exe",
+        "materialize",
+        "2026-09-28T18:39:10.779398+00:00",
+        "2026-10-05T18:39:10.779398+00:00"
+      ],
+      "exit_code": 0,
+      "stdout": "Materializing \u001b[1m\u001b[32m1\u001b[0m feature views from \u001b[1m\u001b[32m2026-09-28 18:39:10+00:00\u001b[0m to \u001b[1m\u001b[32m2026-10-05 18:39:10+00:00\u001b[0m into the \u001b[1m\u001b[32msqlite\u001b[0m online store.\n\n\u001b[1m\u001b[32muser_spend_stats\u001b[0m:\n",
+      "stderr": ""
+    }
+  ],
+  "checks": {
+    "session_naive_gap_above_030": true,
+    "session_infold_gap_near_zero": true,
+    "latest_join_has_future_rows": true,
+    "pit_auc_measured": true,
+    "same_user_same_stored_average": true,
+    "same_user_different_ratios": true,
+    "odfv_matches_formula": true
+  }
+}

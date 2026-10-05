@@ -16,6 +16,7 @@ fixing it. Never ship that.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from uuid import uuid4
 
 import numpy as np
 from qdrant_client import QdrantClient, models
@@ -52,18 +53,19 @@ class SemanticCache:
     client: QdrantClient
     embedder: object
     dim: int = 384
-    threshold: float = 0.75      # AWS ElastiCache benchmark used 0.75
+    threshold: float = 0.75      # Starting value only; NB7 measures a threshold sweep.
     ttl_s: float | None = 3600.0
-    namespaced: bool = True      # False = deliberately vulnerable, for NB7 step 3
+    namespaced: bool = True      # False = deliberately vulnerable tenant demo.
     stats: CacheStats = field(default_factory=CacheStats)
     _clock: float = 0.0          # virtual clock: lets TTL be tested without sleeping
     _next_id: int = 0
+    collection: str = field(default_factory=lambda: f"{CACHE_COLLECTION}_{uuid4().hex[:12]}")
 
     def __post_init__(self) -> None:
-        if CACHE_COLLECTION in {c.name for c in self.client.get_collections().collections}:
-            self.client.delete_collection(CACHE_COLLECTION)
+        # Each demo cache owns its collection; creating another cache must not
+        # erase an existing instance's entries on a shared client.
         self.client.create_collection(
-            collection_name=CACHE_COLLECTION,
+            collection_name=self.collection,
             vectors_config=models.VectorParams(size=self.dim, distance=models.Distance.COSINE),
         )
 
@@ -83,7 +85,7 @@ class SemanticCache:
                 key="tenant", match=models.MatchValue(value=tenant))])
 
         pts = self.client.query_points(
-            collection_name=CACHE_COLLECTION,
+            collection_name=self.collection,
             query=self._embed(question),
             query_filter=qf,
             limit=1,
@@ -98,11 +100,11 @@ class SemanticCache:
             return None
 
         age = self._clock - p.payload["ts"]
-        if self.ttl_s is not None and age > self.ttl_s:
+        if self.ttl_s is not None and age >= self.ttl_s:
             self.stats.stale_evictions += 1
             self.stats.misses += 1
             self.client.delete(
-                collection_name=CACHE_COLLECTION,
+                collection_name=self.collection,
                 points_selector=models.PointIdsList(points=[p.id]),
             )
             return None
@@ -124,14 +126,14 @@ class SemanticCache:
             qf = models.Filter(must=[models.FieldCondition(
                 key="tenant", match=models.MatchValue(value=tenant))])
         pts = self.client.query_points(
-            collection_name=CACHE_COLLECTION,
+            collection_name=self.collection,
             query=self._embed(question), query_filter=qf, limit=1,
         ).points
         return (float(pts[0].score), pts[0].payload) if pts else None
 
     def put(self, tenant: str, question: str, answer: str) -> None:
         self.client.upsert(
-            collection_name=CACHE_COLLECTION,
+            collection_name=self.collection,
             points=[models.PointStruct(
                 id=self._next_id,
                 vector=self._embed(question),

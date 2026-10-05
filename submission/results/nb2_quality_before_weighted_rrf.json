@@ -1,0 +1,522 @@
+{
+  "measured_at": "2026-10-05T16:49:23.205603+00:00",
+  "n_queries": 50,
+  "top_k": 10,
+  "rrf_k": 60,
+  "embedding_backend": "bge-m3",
+  "collection": "lab19",
+  "keyword_min_score_exclusive": 0.0,
+  "keyword_preprocessing": "unicode_tokens_corpus_df_below_80_percent",
+  "keyword_ignored_tokens": [
+    "biến",
+    "bài",
+    "các",
+    "cách",
+    "công",
+    "cụ",
+    "dụ",
+    "giải",
+    "gồm",
+    "hoạ",
+    "hỏi",
+    "khái",
+    "kèm",
+    "là",
+    "minh",
+    "một",
+    "niệm",
+    "này",
+    "nền",
+    "phải",
+    "phổ",
+    "quan",
+    "thích",
+    "thực",
+    "trọng",
+    "tảng",
+    "tế",
+    "viết",
+    "và",
+    "ví",
+    "với",
+    "đòi"
+  ],
+  "average": {
+    "keyword": 0.804,
+    "semantic": 0.952,
+    "hybrid": 0.9
+  },
+  "by_type": {
+    "exact": {
+      "n": 15,
+      "keyword": 1.0,
+      "semantic": 0.98,
+      "hybrid": 1.0
+    },
+    "paraphrase": {
+      "n": 15,
+      "keyword": 0.3466666666666667,
+      "semantic": 0.8666666666666667,
+      "hybrid": 0.6666666666666666
+    },
+    "mixed": {
+      "n": 20,
+      "keyword": 1.0,
+      "semantic": 0.995,
+      "hybrid": 1.0
+    }
+  },
+  "hybrid_beats_both": false,
+  "queries": [
+    {
+      "query_id": "q_000",
+      "query": "Kubernetes auto-scaling cho production",
+      "type": "exact",
+      "topic": "cloud",
+      "keyword": 1.0,
+      "semantic": 0.7,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_001",
+      "query": "OAuth JWT zero-trust",
+      "type": "exact",
+      "topic": "security",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_002",
+      "query": "PostgreSQL replication sharding",
+      "type": "exact",
+      "topic": "database",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_003",
+      "query": "BGP load balancer multi-region",
+      "type": "exact",
+      "topic": "networking",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_004",
+      "query": "Terraform GitOps blue-green canary",
+      "type": "exact",
+      "topic": "devops",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_005",
+      "query": "React Native push notification offline-first",
+      "type": "exact",
+      "topic": "mobile",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_006",
+      "query": "React Redux service worker PWA",
+      "type": "exact",
+      "topic": "frontend",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_007",
+      "query": "FastAPI gRPC GraphQL OpenAPI",
+      "type": "exact",
+      "topic": "backend",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_008",
+      "query": "Kafka Flink Iceberg Delta Lake CDC",
+      "type": "exact",
+      "topic": "data_eng",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_009",
+      "query": "transformer fine-tuning RAG embedding",
+      "type": "exact",
+      "topic": "ai_ml",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_010",
+      "query": "Lambda serverless container Kubernetes",
+      "type": "exact",
+      "topic": "cloud",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_011",
+      "query": "TLS encryption penetration testing firewall",
+      "type": "exact",
+      "topic": "security",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_012",
+      "query": "MongoDB Redis transaction ACID",
+      "type": "exact",
+      "topic": "database",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_013",
+      "query": "DNS CDN VPN throughput latency",
+      "type": "exact",
+      "topic": "networking",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_014",
+      "query": "Prometheus Grafana CI/CD rollback",
+      "type": "exact",
+      "topic": "devops",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_015",
+      "query": "co giãn linh hoạt theo nhu cầu sử dụng",
+      "type": "paraphrase",
+      "topic": "cloud",
+      "keyword": 0.0,
+      "semantic": 0.5,
+      "hybrid": 0.3
+    },
+    {
+      "query_id": "q_016",
+      "query": "che giấu nội dung quan trọng khỏi kẻ xấu",
+      "type": "paraphrase",
+      "topic": "security",
+      "keyword": 0.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_017",
+      "query": "tăng tốc tìm bản ghi bằng cấu trúc B-tree",
+      "type": "paraphrase",
+      "topic": "database",
+      "keyword": 0.2,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_018",
+      "query": "rút ngắn thời gian phản hồi giữa các nơi xa nhau",
+      "type": "paraphrase",
+      "topic": "networking",
+      "keyword": 0.0,
+      "semantic": 0.7,
+      "hybrid": 0.3
+    },
+    {
+      "query_id": "q_019",
+      "query": "chạy kiểm thử trước khi gộp nhánh code",
+      "type": "paraphrase",
+      "topic": "devops",
+      "keyword": 0.0,
+      "semantic": 1.0,
+      "hybrid": 0.9
+    },
+    {
+      "query_id": "q_020",
+      "query": "lưu offline cache khi không có sóng wifi",
+      "type": "paraphrase",
+      "topic": "mobile",
+      "keyword": 0.0,
+      "semantic": 1.0,
+      "hybrid": 0.4
+    },
+    {
+      "query_id": "q_021",
+      "query": "tăng tốc render trang web cảm nhận mượt hơn",
+      "type": "paraphrase",
+      "topic": "frontend",
+      "keyword": 0.0,
+      "semantic": 0.8,
+      "hybrid": 0.5
+    },
+    {
+      "query_id": "q_022",
+      "query": "dịch vụ vẫn chạy được khi 1 service phụ thuộc gãy",
+      "type": "paraphrase",
+      "topic": "backend",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 0.9
+    },
+    {
+      "query_id": "q_023",
+      "query": "chuyển sự kiện realtime từ OLTP sang analytics",
+      "type": "paraphrase",
+      "topic": "data_eng",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_024",
+      "query": "đo lường liệu trợ lý có bịa câu trả lời không",
+      "type": "paraphrase",
+      "topic": "ai_ml",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_025",
+      "query": "nhiều khách hàng chia sẻ chung một cluster",
+      "type": "paraphrase",
+      "topic": "cloud",
+      "keyword": 0.0,
+      "semantic": 1.0,
+      "hybrid": 0.4
+    },
+    {
+      "query_id": "q_026",
+      "query": "nhận dạng đăng nhập từ vị trí lạ",
+      "type": "paraphrase",
+      "topic": "security",
+      "keyword": 0.0,
+      "semantic": 1.0,
+      "hybrid": 0.3
+    },
+    {
+      "query_id": "q_027",
+      "query": "partition dữ liệu theo user_id tăng write throughput",
+      "type": "paraphrase",
+      "topic": "database",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_028",
+      "query": "phát hiện gói tin lạ chen vào",
+      "type": "paraphrase",
+      "topic": "networking",
+      "keyword": 0.0,
+      "semantic": 0.0,
+      "hybrid": 0.0
+    },
+    {
+      "query_id": "q_029",
+      "query": "tự khôi phục bản cũ khi bản mới lỗi",
+      "type": "paraphrase",
+      "topic": "devops",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_030",
+      "query": "Kubernetes và cách tách biệt môi trường",
+      "type": "mixed",
+      "topic": "cloud",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_031",
+      "query": "OAuth và xác thực hai yếu tố",
+      "type": "mixed",
+      "topic": "security",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_032",
+      "query": "PostgreSQL và đảm bảo tính nhất quán",
+      "type": "mixed",
+      "topic": "database",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_033",
+      "query": "CDN edge cho streaming video độ trễ thấp",
+      "type": "mixed",
+      "topic": "networking",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_034",
+      "query": "Terraform và infrastructure as code",
+      "type": "mixed",
+      "topic": "devops",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_035",
+      "query": "Flutter offline-first và đồng bộ dữ liệu",
+      "type": "mixed",
+      "topic": "mobile",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_036",
+      "query": "React và Core Web Vitals tối ưu LCP",
+      "type": "mixed",
+      "topic": "frontend",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_037",
+      "query": "FastAPI và rate limiting công bằng",
+      "type": "mixed",
+      "topic": "backend",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_038",
+      "query": "Spark và phân vùng theo ngày",
+      "type": "mixed",
+      "topic": "data_eng",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_039",
+      "query": "LLM và phát hiện hallucination",
+      "type": "mixed",
+      "topic": "ai_ml",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_040",
+      "query": "AWS Lambda và tối ưu chi phí",
+      "type": "mixed",
+      "topic": "cloud",
+      "keyword": 1.0,
+      "semantic": 0.9,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_041",
+      "query": "encryption và bảo vệ dữ liệu nhạy cảm",
+      "type": "mixed",
+      "topic": "security",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_042",
+      "query": "MongoDB và high-write workload",
+      "type": "mixed",
+      "topic": "database",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_043",
+      "query": "HTTP và cân bằng tải multi-region",
+      "type": "mixed",
+      "topic": "networking",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_044",
+      "query": "Prometheus và giám sát log tập trung",
+      "type": "mixed",
+      "topic": "devops",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_045",
+      "query": "Swift biometric authentication",
+      "type": "mixed",
+      "topic": "mobile",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_046",
+      "query": "TypeScript và quản lý state phức tạp",
+      "type": "mixed",
+      "topic": "frontend",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_047",
+      "query": "gRPC và saga pattern phân tán",
+      "type": "mixed",
+      "topic": "backend",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_048",
+      "query": "Kafka và schema evolution",
+      "type": "mixed",
+      "topic": "data_eng",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    },
+    {
+      "query_id": "q_049",
+      "query": "BERT và tinh chỉnh trên domain",
+      "type": "mixed",
+      "topic": "ai_ml",
+      "keyword": 1.0,
+      "semantic": 1.0,
+      "hybrid": 1.0
+    }
+  ]
+}

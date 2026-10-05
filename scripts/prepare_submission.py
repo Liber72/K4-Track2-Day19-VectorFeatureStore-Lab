@@ -48,6 +48,12 @@ def write_reflection(root: Path = ROOT, name: str | None = None) -> Path | None:
         "khi truy vấn diễn đạt lại và semantic đã đủ tốt. Hybrid phù hợp khi cần cả "
         "hai tín hiệu, nhưng có thêm chi phí xử lý và cần đánh giá trên dữ liệu thật."
     )
+    if quality.get("fusion_method") == "weighted_rrf":
+        weights = quality["fusion_weights"]
+        answer += (
+            f"\n\nWeighted RRF: keyword={weights['keyword']}, semantic={weights['semantic']}; "
+            "tuned on lab queries, not independently validated."
+        )
     body = (
         "# Reflection — Lab 19\n\n"
         f"**Tên:** {name}\n"

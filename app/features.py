@@ -109,9 +109,10 @@ def window_aggregates(events: pd.DataFrame, windows=("1h", "24h", "7d")) -> pd.D
         # when subtracted from a datetime64 array.
         delta = np.timedelta64(_window_seconds(w), "s")
         for _user, g in df.groupby("user_id", sort=False):
-            ts = g["event_timestamp"].values.astype("datetime64[s]")
+            ts = g["event_timestamp"].values.astype("datetime64[ns]")
             # count of *strictly previous* events inside the window
-            cnt = [int((ts[:i] > ts[i] - delta).sum()) for i in range(len(ts))]
+            cnt = [int(((ts[:i] > ts[i] - delta) & (ts[:i] < ts[i])).sum())
+                   for i in range(len(ts))]
             vals.append(pd.Series(cnt, index=g.index))
         out[col] = pd.concat(vals).sort_index()
 
@@ -143,15 +144,19 @@ def target_encode_naive(df: pd.DataFrame, col: str, target: str) -> pd.Series:
 def target_encode_in_fold(df: pd.DataFrame, col: str, target: str,
                           n_folds: int = 5, seed: int = 42) -> pd.Series:
     """Correct: a row is encoded using only the OTHER folds' labels."""
+    if n_folds < 2:
+        raise ValueError("in-fold encoding requires at least two folds")
     rng = np.random.default_rng(seed)
     fold = rng.integers(0, n_folds, size=len(df))
     out = pd.Series(np.nan, index=df.index, dtype=float)
-    prior = df[target].mean()
     for f in range(n_folds):
         tr, te = fold != f, fold == f
         means = df.loc[tr].groupby(col)[target].mean()
+        # Even the fallback must not use held-out labels. For an empty
+        # training fold use a fixed, label-independent binary prior.
+        prior = df.loc[tr, target].mean() if tr.any() else 0.5
         out.loc[te] = df.loc[te, col].map(means).fillna(prior).values
-    return out.fillna(prior)
+    return out
 
 
 def auc(scores: np.ndarray, labels: np.ndarray) -> float:

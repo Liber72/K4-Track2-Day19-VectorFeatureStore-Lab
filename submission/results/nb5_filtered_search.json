@@ -1,0 +1,315 @@
+{
+  "measured_at": "2026-10-05T18:32:52.438277+00:00",
+  "started_at": "2026-10-05T18:32:24.170999+00:00",
+  "python": "D:\\AI_Thucchien\\K4-Track2-Day19-VectorFeatureStore-Lab\\.venv\\Scripts\\python.exe",
+  "status": "passed",
+  "notebook": "NB5",
+  "environment": {
+    "model": "BAAI/bge-m3",
+    "dim": 1024,
+    "qdrant_mode": "server",
+    "reused_nb1": true,
+    "n_docs": 1000
+  },
+  "query": "tự động mở rộng hệ thống theo lưu lượng",
+  "selectivity": [
+    {
+      "filter": "không filter",
+      "selectivity_pct": 100.0,
+      "post_recall": 1.0,
+      "filtered_recall": 1.0,
+      "pre_ms": 7.572400001663482,
+      "post_ms": 16.29999999931897,
+      "filtered_ms": 9.314400002040202
+    },
+    {
+      "filter": "access=internal",
+      "selectivity_pct": 23.599999999999998,
+      "post_recall": 0.3,
+      "filtered_recall": 1.0,
+      "pre_ms": 0.9710000013001263,
+      "post_ms": 11.08830000157468,
+      "filtered_ms": 94.69180000087363
+    },
+    {
+      "filter": "tenant=acme",
+      "selectivity_pct": 31.900000000000002,
+      "post_recall": 0.3,
+      "filtered_recall": 1.0,
+      "pre_ms": 1.5178000030573457,
+      "post_ms": 53.18199999965145,
+      "filtered_ms": 24.74900000015623
+    },
+    {
+      "filter": "published >=2026",
+      "selectivity_pct": 13.5,
+      "post_recall": 0.1,
+      "filtered_recall": 1.0,
+      "pre_ms": 0.667199998133583,
+      "post_ms": 9.47729999825242,
+      "filtered_ms": 43.39100000288454
+    },
+    {
+      "filter": "acme AND >=2026",
+      "selectivity_pct": 3.8,
+      "post_recall": 0.0,
+      "filtered_recall": 1.0,
+      "pre_ms": 7.644799999980023,
+      "post_ms": 33.22710000065854,
+      "filtered_ms": 22.475800000393065
+    }
+  ],
+  "retrievals": [
+    {
+      "filter": "không filter",
+      "truth": [
+        "cloud_045",
+        "cloud_022",
+        "cloud_053",
+        "cloud_040",
+        "cloud_072",
+        "cloud_094",
+        "cloud_008",
+        "cloud_064",
+        "cloud_036",
+        "cloud_000"
+      ],
+      "post": [
+        "cloud_045",
+        "cloud_022",
+        "cloud_053",
+        "cloud_040",
+        "cloud_072",
+        "cloud_094",
+        "cloud_008",
+        "cloud_064",
+        "cloud_036",
+        "cloud_000"
+      ],
+      "filtered": [
+        "cloud_045",
+        "cloud_022",
+        "cloud_053",
+        "cloud_040",
+        "cloud_072",
+        "cloud_094",
+        "cloud_008",
+        "cloud_064",
+        "cloud_036",
+        "cloud_000"
+      ]
+    },
+    {
+      "filter": "access=internal",
+      "truth": [
+        "cloud_045",
+        "cloud_094",
+        "cloud_000",
+        "devops_048",
+        "devops_057",
+        "devops_089",
+        "devops_065",
+        "devops_069",
+        "devops_026",
+        "mobile_022"
+      ],
+      "post": [
+        "cloud_045",
+        "cloud_094",
+        "cloud_000"
+      ],
+      "filtered": [
+        "cloud_045",
+        "cloud_094",
+        "cloud_000",
+        "devops_048",
+        "devops_057",
+        "devops_089",
+        "devops_065",
+        "devops_069",
+        "devops_026",
+        "mobile_022"
+      ]
+    },
+    {
+      "filter": "tenant=acme",
+      "truth": [
+        "cloud_040",
+        "cloud_064",
+        "cloud_036",
+        "cloud_029",
+        "cloud_091",
+        "devops_086",
+        "devops_087",
+        "devops_060",
+        "devops_051",
+        "devops_007"
+      ],
+      "post": [
+        "cloud_040",
+        "cloud_064",
+        "cloud_036"
+      ],
+      "filtered": [
+        "cloud_040",
+        "cloud_064",
+        "cloud_036",
+        "cloud_029",
+        "cloud_091",
+        "devops_086",
+        "devops_087",
+        "devops_060",
+        "devops_051",
+        "devops_007"
+      ]
+    },
+    {
+      "filter": "published >=2026",
+      "truth": [
+        "cloud_008",
+        "cloud_005",
+        "devops_006",
+        "devops_051",
+        "devops_054",
+        "devops_012",
+        "devops_089",
+        "devops_017",
+        "mobile_066",
+        "backend_005"
+      ],
+      "post": [
+        "cloud_008"
+      ],
+      "filtered": [
+        "cloud_008",
+        "cloud_005",
+        "devops_006",
+        "devops_051",
+        "devops_054",
+        "devops_012",
+        "devops_089",
+        "devops_017",
+        "mobile_066",
+        "backend_005"
+      ]
+    },
+    {
+      "filter": "acme AND >=2026",
+      "truth": [
+        "devops_051",
+        "backend_092",
+        "cloud_075",
+        "data_eng_087",
+        "mobile_033",
+        "networking_047",
+        "networking_039",
+        "backend_082",
+        "networking_082",
+        "networking_091"
+      ],
+      "post": [],
+      "filtered": [
+        "devops_051",
+        "backend_092",
+        "cloud_075",
+        "data_eng_087",
+        "mobile_033",
+        "networking_047",
+        "networking_039",
+        "backend_082",
+        "networking_082",
+        "networking_091"
+      ]
+    }
+  ],
+  "overfetch": [
+    {
+      "fetch_k": 10,
+      "recall": 0.03333333333333333,
+      "candidate_pct": 1.0,
+      "per_query_recall": [
+        0.0,
+        0.0,
+        0.1
+      ]
+    },
+    {
+      "fetch_k": 50,
+      "recall": 0.10000000000000002,
+      "candidate_pct": 5.0,
+      "per_query_recall": [
+        0.1,
+        0.0,
+        0.2
+      ]
+    },
+    {
+      "fetch_k": 200,
+      "recall": 0.7333333333333334,
+      "candidate_pct": 20.0,
+      "per_query_recall": [
+        0.4,
+        0.8,
+        1.0
+      ]
+    },
+    {
+      "fetch_k": 500,
+      "recall": 1.0,
+      "candidate_pct": 50.0,
+      "per_query_recall": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "fetch_k": 1000,
+      "recall": 1.0,
+      "candidate_pct": 100.0,
+      "per_query_recall": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "first_full_recall": {
+    "fetch_k": 500,
+    "recall": 1.0,
+    "candidate_pct": 50.0,
+    "per_query_recall": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "tenants": [
+    {
+      "tenant": "acme",
+      "post_recall": 0.3,
+      "filtered_recall": 1.0
+    },
+    {
+      "tenant": "globex",
+      "post_recall": 0.4,
+      "filtered_recall": 1.0
+    },
+    {
+      "tenant": "initech",
+      "post_recall": 0.3,
+      "filtered_recall": 1.0
+    }
+  ],
+  "filtered_ladder_recalls": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "checks": {
+    "post_filter_drops_on_tight_filter": true,
+    "filtered_recall_is_one": true,
+    "overfetch_recovers_recall": true,
+    "overfetch_near_half_corpus": true
+  }
+}

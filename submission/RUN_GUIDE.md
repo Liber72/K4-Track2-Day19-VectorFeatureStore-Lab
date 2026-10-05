@@ -3,6 +3,9 @@
 Code NB1–NB4 đã được chuẩn bị. Bạn chạy notebook, quan sát kết quả, giữ output
 và chụp ảnh. Phần nâng cao NB5–NB8 và bonus là tự chọn, ngoài lộ trình core này.
 
+Tiếp tục NB5–NB8 theo [hướng dẫn nâng cao](ADVANCED_RUN_GUIDE.md):
+bốn notebook `.ipynb`, bảng cần quan sát, kết quả JSON và ảnh cần lưu.
+
 ## 1. Môi trường
 
 Trong PowerShell tại thư mục dự án:
@@ -136,3 +139,17 @@ git push -u origin main
 
 Nộp **URL GitHub public** vào **VinUni LMS Day 19**. Không cần PR.
 Giữ repo public đến khi có điểm.
+
+NB2 reports three modes: keyword, semantic and Weighted RRF (keyword=0.05, semantic=0.95, depth=50 for top-10, k=60). The API uses the same weights. These weights were selected after inspecting the lab sweep; report this change in the reflection. The sweep measured 95.4% Hybrid versus 95.2% Semantic and 80.4% Keyword. The mixed slice ties Semantic at 99.5%.
+
+Sau khi đổi trọng số, restart kernel NB2 và chạy lại để lưu bảng kết quả chính.
+Nếu API đã chạy, dừng rồi khởi động lại trước NB3; NB3 kiểm tra trọng số qua `/healthz`
+để tránh đo nhầm tiến trình còn dùng cấu hình cũ.
+
+NB2 có thêm **mục 6 — Chẩn đoán**: chạy sau mục 5 để so sánh 25 cấu hình trọng số
+và độ sâu lấy ứng viên. Xem cột `beats both` và dòng `Best measured configuration`.
+Kết quả được lưu riêng ở `submission/results/nb2_tuning.json`; danh sách tài liệu
+ở `nb2_rankings.json` giúp phân tích nguyên nhân tăng/giảm. Phần này không tự thay
+đổi API hoặc kết quả chính. Chỉ áp dụng cấu hình sau khi xem số đo; khi thay đổi
+phải đồng bộ NB2/API và chạy lại NB2, NB3. Đây là tối ưu trên bộ lab đã xem,
+không phải kết quả trên một tập kiểm tra độc lập.

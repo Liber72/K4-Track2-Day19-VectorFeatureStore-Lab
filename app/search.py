@@ -3,8 +3,8 @@
 Designed to work in both lite (Qdrant in-memory) and docker (Qdrant server) modes;
 switch via env var QDRANT_MODE=memory|server (defaults to memory).
 
-The hybrid mode uses Reciprocal Rank Fusion with k=60 — the same default used
-by Vespa, Elasticsearch, and the hybrid RAG production stacks in the deck §3.
+The hybrid mode uses weighted RRF with k=60: keyword=0.05, semantic=0.95.
+NB2 reports keyword, semantic and weighted hybrid retrieval.
 """
 from __future__ import annotations
 
@@ -21,6 +21,7 @@ from qdrant_client.models import Distance, PointStruct, VectorParams
 from rank_bm25 import BM25Okapi
 
 from app.embeddings import Embedder
+from app.fusion import fuse_rankings
 from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
@@ -91,9 +92,8 @@ class Searcher:
                 self.doc_ids.append(d["doc_id"])
 
     def _build_bm25(self) -> None:
-        # Tokenise on whitespace — for VN+EN mixed text this is "good enough" baseline.
-        # A real production system would use a proper VN tokenizer (underthesea / pyvi).
-        # That choice is a "think hard" decision flagged in VIBE-CODING.md.
+        # Unicode tokens handle punctuation; Vietnamese compounds are still syllables.
+        # Corpus-wide boilerplate is removed before building the BM25 index.
         tokenized = [self._tokenize(d["title"] + " " + d["text"]) for d in self.docs]
         # Very common corpus words do not discriminate between documents.
         # Derive this filter from document frequency, without relevance labels.
@@ -246,16 +246,11 @@ class Searcher:
         kw_hits = self._search_keyword(query, depth)
         sem_hits = self._search_semantic(query, depth)
 
-        # Reciprocal Rank Fusion — score(d) = sum over rankers of 1 / (k + rank_r(d))
-        # rank_r is 1-based (first position is rank 1, not 0).
-        rrf_scores: dict[str, float] = {}
-        meta: dict[str, SearchHit] = {}
-        for hits in (kw_hits, sem_hits):
-            for rank, h in enumerate(hits, start=1):
-                rrf_scores[h.doc_id] = rrf_scores.get(h.doc_id, 0.0) + 1.0 / (rrf_k + rank)
-                meta.setdefault(h.doc_id, h)
-
-        ordered = sorted(rrf_scores.items(), key=lambda kv: -kv[1])[:top_k]
+        # Weighted RRF uses one-based ranks and shared keyword/semantic weights.
+        meta = {h.doc_id: h for h in (*sem_hits, *kw_hits)}
+        ordered = fuse_rankings(
+            [h.doc_id for h in kw_hits], [h.doc_id for h in sem_hits], k=rrf_k,
+        )[:top_k]
         return [
             SearchHit(
                 doc_id=doc_id,

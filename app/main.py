@@ -19,6 +19,7 @@ from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 
 from app.search import COLLECTION, Searcher
+from app.fusion import KEYWORD_WEIGHT, SEMANTIC_WEIGHT
 
 ROOT = Path(__file__).resolve().parent.parent
 CORPUS_PATH = ROOT / "data" / "corpus_vn.jsonl"
@@ -86,6 +87,7 @@ def healthz() -> dict:
         "collection": COLLECTION,
         "embedding_backend": _searcher.embedder.backend if _searcher else None,
         "reused_index": _searcher.reused_index if _searcher else False,
+        "fusion_weights": {"keyword": KEYWORD_WEIGHT, "semantic": SEMANTIC_WEIGHT},
     }
 
 

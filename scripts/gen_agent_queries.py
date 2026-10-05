@@ -17,10 +17,8 @@ from __future__ import annotations
 
 import json
 import sys
-import warnings
 from pathlib import Path
 
-warnings.filterwarnings("ignore")
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
@@ -59,30 +57,37 @@ PAIRS = [
 ]
 
 
+def generate_queries(index: FilteredIndex) -> list[dict]:
+    """Use the caller's vectors and model, never a stale answer file from another model."""
+    everything = lambda d: True
+    rows = []
+    for i, (ta, qa, tb, qb) in enumerate(PAIRS):
+        gold_a = index.exact_top_k(index.embed(qa), everything, PER_SIDE)
+        gold_b = index.exact_top_k(index.embed(qb), everything, PER_SIDE)
+        rows.append({
+            "query_id": f"mq_{i:03d}", "question": f"{qa} và {qb}",
+            "sub_questions": [qa, qb], "topics": [ta, tb],
+            "relevant_doc_ids": sorted(set(gold_a) | set(gold_b)),
+            "gold_a": gold_a, "gold_b": gold_b,
+            "embedding_model": index.embedder.model_name,
+            "embedding_dim": index.embedder.dim,
+        })
+    return rows
+
+
 def main() -> int:
     corpus = ROOT / "data" / "corpus_vn.jsonl"
     if not corpus.exists():
         print(f"missing {corpus} -- run `make seed` first")
         return 1
 
-    print("building index (embeds 1000 docs, ~15 s)…")
+    print("Loading the corpus/index; server mode reuses NB1 vectors…")
     index = FilteredIndex.from_searcher(Searcher.from_corpus(corpus))
 
     out = ROOT / "data" / "agent_queries.jsonl"
-    everything = lambda d: True                       # noqa: E731
     with out.open("w", encoding="utf-8") as f:
-        for i, (ta, qa, tb, qb) in enumerate(PAIRS):
-            gold_a = index.exact_top_k(index.embed(qa), everything, PER_SIDE)
-            gold_b = index.exact_top_k(index.embed(qb), everything, PER_SIDE)
-            f.write(json.dumps({
-                "query_id": f"mq_{i:03d}",
-                "question": f"{qa} và {qb}",
-                "sub_questions": [qa, qb],
-                "topics": [ta, tb],
-                "relevant_doc_ids": sorted(set(gold_a) | set(gold_b)),
-                "gold_a": gold_a,
-                "gold_b": gold_b,
-            }, ensure_ascii=False) + "\n")
+        for row in generate_queries(index):
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
     print(f"wrote {out} ({len(PAIRS)} compound queries, {PER_SIDE} gold docs per side)")
     return 0
 

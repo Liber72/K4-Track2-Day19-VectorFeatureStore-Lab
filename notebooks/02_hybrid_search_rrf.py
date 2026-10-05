@@ -34,6 +34,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from app.evaluation import precision_at_k, save_result
+from app.fusion import KEYWORD_WEIGHT, SEMANTIC_WEIGHT, fuse_rankings
 from app.search import COLLECTION, Searcher
 
 DATA = Path(_setup.__file__).resolve().parent.parent / "data"
@@ -70,6 +71,7 @@ print("Ignored common corpus tokens:", sorted(searcher.bm25_ignored_tokens))
 TOP_K = 10
 RRF_K = 60
 
+@lru_cache(maxsize=256)
 def search_keyword(query: str, top_k: int = TOP_K) -> list[str]:
     tokens = [token for token in searcher._tokenize(query)
               if token not in searcher.bm25_ignored_tokens]
@@ -83,6 +85,7 @@ def search_keyword(query: str, top_k: int = TOP_K) -> list[str]:
 def query_vector(query: str) -> tuple[float, ...]:
     return tuple(next(embedder.embed([query])).tolist())
 
+@lru_cache(maxsize=256)
 def search_semantic(query: str, top_k: int = TOP_K) -> list[str]:
     result = client.query_points(
         collection_name=COLLECTION,
@@ -92,21 +95,28 @@ def search_semantic(query: str, top_k: int = TOP_K) -> list[str]:
     return [point.payload["doc_id"] for point in result.points]
 
 # %% [markdown]
-# ## 3. Reciprocal Rank Fusion
+# ## 3. Weighted Reciprocal Rank Fusion
 #
-# Công thức: score(d) = tổng `1 / (k + rank)` từ hai bộ tìm kiếm.
-# Rank bắt đầu từ **1**, k = **60**. Không cộng trực tiếp BM25 score với cosine,
-# vì hai thang điểm có ý nghĩa khác nhau.
+# Standard RRF: sum of 1 / (k + rank), with one-based ranks and k=60.
+# Weighted RRF: 0.05 / (k + keyword_rank) + 0.95 / (k + semantic_rank).
+# A document absent from one ranking receives no vote from that source.
+# Semantic gets more influence because it outperformed BM25 in the previous run.
+# The three reported modes are keyword, semantic and hybrid. This adjustment followed inspection of the lab
+# golden set, so these results are exploratory, not independent held-out scores.
 
 # %%
-def search_hybrid(query: str, top_k: int = TOP_K, rrf_k: int = RRF_K) -> list[str]:
+def search_hybrid(
+    query: str, top_k: int = TOP_K, rrf_k: int = RRF_K,
+    keyword_weight: float = KEYWORD_WEIGHT, semantic_weight: float = SEMANTIC_WEIGHT,
+) -> list[str]:
     depth = max(top_k * 5, 50)
-    rankings = (search_keyword(query, depth), search_semantic(query, depth))
-    scores: dict[str, float] = {}
-    for ranked_ids in rankings:
-        for rank, doc_id in enumerate(ranked_ids, start=1):
-            scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (rrf_k + rank)
-    return [doc_id for doc_id, _ in sorted(scores.items(), key=lambda item: -item[1])[:top_k]]
+    fused = fuse_rankings(
+        search_keyword(query, depth), search_semantic(query, depth), k=rrf_k,
+        keyword_weight=keyword_weight, semantic_weight=semantic_weight,
+    )
+    return [doc_id for doc_id, _ in fused[:top_k]]
+
+print(f"Weighted RRF: keyword={KEYWORD_WEIGHT}, semantic={SEMANTIC_WEIGHT}, k={RRF_K}")
 
 test_q = "co giãn linh hoạt theo nhu cầu sử dụng"
 print(f"Query: {test_q}")
@@ -138,7 +148,8 @@ for i, q in enumerate(golden, start=1):
     p_hyb.append(scores["hybrid"])
     query_results.append({
         "query_id": q["query_id"], "query": q["query"],
-        "type": q["mode_hint"], "topic": q["topic"], **scores,
+        "type": q["mode_hint"], "topic": q["topic"],
+        **scores,
     })
     if i % 10 == 0:
         print(f"Evaluated: {i}/{len(golden)} queries")
@@ -180,6 +191,10 @@ for query_type in ("exact", "paraphrase", "mixed"):
 
 result_path = save_result("nb2_quality.json", {
     "n_queries": len(golden), "top_k": TOP_K, "rrf_k": RRF_K,
+    "fusion_method": "weighted_rrf",
+    "fusion_weights": {"keyword": KEYWORD_WEIGHT, "semantic": SEMANTIC_WEIGHT},
+    "candidate_depth": max(TOP_K * 5, 50),
+    "evaluation_note": "Adjusted after observing lab golden results; not an independent held-out evaluation",
     "embedding_backend": embedder.backend, "collection": COLLECTION,
     "keyword_min_score_exclusive": 0.0,
     "keyword_preprocessing": "unicode_tokens_corpus_df_below_80_percent",
@@ -199,5 +214,3 @@ print(f"Saved: {result_path}")
 #
 # Khi hybrid chưa thắng: đối chiếu từng query trong nb2_quality.json và các
 # danh sách top-10, kiểm tra RRF, chất lượng BM25 và model. Giữ nguyên số đo.
-
-# %%

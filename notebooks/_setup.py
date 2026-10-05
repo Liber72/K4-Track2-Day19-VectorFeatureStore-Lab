@@ -1,7 +1,7 @@
 """Path bootstrap for lab notebooks.
 
 Resolves the repo root (where `app/`, `scripts/`, `data/` live) regardless of
-where Jupyter was launched from. Used by all 4 notebooks:
+where Jupyter was launched from. Used by all 8 notebooks:
 
     import _setup  # noqa: F401   -- adds repo root to sys.path
 

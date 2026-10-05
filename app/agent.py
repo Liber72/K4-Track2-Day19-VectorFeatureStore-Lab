@@ -128,7 +128,7 @@ class RetrievalTool:
         if qf is None:
             qv = self.index.embed(args.query)
             pts = self.index.client.query_points(
-                collection_name="lab19_filtered", query=qv.tolist(), limit=args.top_k
+                collection_name=self.index.collection, query=qv.tolist(), limit=args.top_k
             ).points
             ids = [p.payload["doc_id"] for p in pts]
         else:
@@ -144,6 +144,8 @@ class SingleShotPlanner:
     """The baseline: embed the whole question once, retrieve once."""
 
     def __init__(self, budget: int = 16) -> None:
+        if budget < 1:
+            raise ValueError("budget must be positive")
         self.budget = budget
 
     def plan(self, question: str) -> list[ToolArgs]:
@@ -160,6 +162,8 @@ class RuleBasedPlanner:
     """
 
     def __init__(self, budget: int = 16, use_filters: bool = True) -> None:
+        if budget < 1:
+            raise ValueError("budget must be positive")
         self.budget = budget
         self.use_filters = use_filters
 
@@ -182,17 +186,20 @@ class RuleBasedPlanner:
         parts = [p.strip() for p in SPLIT_RE.split(question) if p and len(p.strip()) > 3]
         if len(parts) < 2:
             parts = [question]
-        # Fair comparison: the total number of retrieved documents is the same
-        # as the single-shot baseline, just split across sub-questions.
-        per = max(1, self.budget // len(parts))
+        # Preserve the whole question when there are more parts than slots.
+        if len(parts) > self.budget:
+            parts = parts[:self.budget - 1] + [" và ".join(parts[self.budget - 1:])]
+        # Allocate the remainder too: a 3-part question gets 6 + 5 + 5, not 15.
+        # This is requested capacity; duplicates/filters can yield fewer unique docs.
+        per, remainder = divmod(self.budget, len(parts))
         return [
             ToolArgs(
                 query=p,
                 topic=self.detect_topic(p) if self.use_filters else None,
                 since_year=self.detect_year(p) if self.use_filters else None,
-                top_k=per,
+                top_k=per + int(i < remainder),
             )
-            for p in parts
+            for i, p in enumerate(parts)
         ]
 
 
