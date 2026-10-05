@@ -1,0 +1,106 @@
+{
+  "measured_at": "2026-10-05T16:29:26.296856+00:00",
+  "n_queries": 50,
+  "warmup_per_mode": 10,
+  "percentile_method": "nearest-rank",
+  "api_status": {
+    "app": "lab19-search",
+    "ready": true,
+    "n_docs": 1000,
+    "collection": "lab19",
+    "embedding_backend": "bge-m3",
+    "reused_index": true
+  },
+  "sample_response": {
+    "query": "cloud computing tự động mở rộng",
+    "mode": "hybrid",
+    "top_k": 10,
+    "latency_ms": 16605.817400000888,
+    "hits": [
+      {
+        "doc_id": "cloud_072",
+        "title": "Điện toán đám mây: tự động mở rộng theo lưu lượng",
+        "text": "Theo khuyến nghị 2026, điện toán đám mây đòi hỏi phải tự động mở rộng theo lưu lượng. Các công cụ phổ biến gồm cloud, Azure, Kubernetes. Khái niệm triển khai và đám mây là nền tảng quan trọng. Bài viết này giải thích cách tự động mở rộng theo lưu lượng một cách thực tế, kèm ví dụ minh hoạ với cloud và Kubernetes.",
+        "score": 0.032266458495966696
+      },
+      {
+        "doc_id": "cloud_053",
+        "title": "Điện toán đám mây: tự động mở rộng theo lưu lượng",
+        "text": "Để tối ưu chi phí, điện toán đám mây đòi hỏi phải tự động mở rộng theo lưu lượng. Các công cụ phổ biến gồm AWS, auto-scaling, cloud. Khái niệm tự động mở rộng và triển khai là nền tảng quan trọng. Bài viết này giải thích cách tự động mở rộng theo lưu lượng một cách thực tế, kèm ví dụ minh hoạ với AWS và cloud.",
+        "score": 0.03177805800756621
+      },
+      {
+        "doc_id": "cloud_000",
+        "title": "Điện toán đám mây: tự động mở rộng theo lưu lượng",
+        "text": "Trong môi trường production hiện đại, điện toán đám mây đòi hỏi phải tự động mở rộng theo lưu lượng. Các công cụ phổ biến gồm cloud, GCP, Azure. Khái niệm không máy chủ và hạ tầng là nền tảng quan trọng. Bài viết này giải thích cách tự động mở rộng theo lưu lượng một cách thực tế, kèm ví dụ minh hoạ với cloud và Azure.",
+        "score": 0.03149801587301587
+      },
+      {
+        "doc_id": "cloud_064",
+        "title": "Điện toán đám mây: tự động mở rộng theo lưu lượng",
+        "text": "Trong môi trường production hiện đại, điện toán đám mây đòi hỏi phải tự động mở rộng theo lưu lượng. Các công cụ phổ biến gồm container, cloud, Azure. Khái niệm tự động mở rộng và đa người dùng là nền tảng quan trọng. Bài viết này giải thích cách tự động mở rộng theo lưu lượng một cách thực tế, kèm ví dụ minh hoạ với container và Azure.",
+        "score": 0.03128054740957967
+      },
+      {
+        "doc_id": "cloud_016",
+        "title": "Điện toán đám mây: tự động mở rộng theo lưu lượng",
+        "text": "Theo khuyến nghị 2026, điện toán đám mây đòi hỏi phải tự động mở rộng theo lưu lượng. Các công cụ phổ biến gồm cloud, serverless, AWS. Khái niệm hạ tầng và không máy chủ là nền tảng quan trọng. Bài viết này giải thích cách tự động mở rộng theo lưu lượng một cách thực tế, kèm ví dụ minh hoạ với cloud và AWS.",
+        "score": 0.0304147465437788
+      },
+      {
+        "doc_id": "cloud_008",
+        "title": "Điện toán đám mây: tự động mở rộng theo lưu lượng",
+        "text": "Tại các doanh nghiệp công nghệ Việt Nam, điện toán đám mây đòi hỏi phải tự động mở rộng theo lưu lượng. Các công cụ phổ biến gồm Azure, serverless, container. Khái niệm tự động mở rộng và đa người dùng là nền tảng quan trọng. Bài viết này giải thích cách tự động mở rộng theo lưu lượng một cách thực tế, kèm ví dụ minh hoạ với Azure và container.",
+        "score": 0.029850746268656716
+      },
+      {
+        "doc_id": "cloud_045",
+        "title": "Điện toán đám mây: tự động mở rộng theo lưu lượng",
+        "text": "Để tối ưu chi phí, điện toán đám mây đòi hỏi phải tự động mở rộng theo lưu lượng. Các công cụ phổ biến gồm Kubernetes, serverless, auto-scaling. Khái niệm triển khai và không máy chủ là nền tảng quan trọng. Bài viết này giải thích cách tự động mở rộng theo lưu lượng một cách thực tế, kèm ví dụ minh hoạ với Kubernetes và auto-scaling.",
+        "score": 0.02964426877470356
+      },
+      {
+        "doc_id": "cloud_094",
+        "title": "Điện toán đám mây: tự động mở rộng theo lưu lượng",
+        "text": "Trong môi trường production hiện đại, điện toán đám mây đòi hỏi phải tự động mở rộng theo lưu lượng. Các công cụ phổ biến gồm GCP, container, auto-scaling. Khái niệm hạ tầng và không máy chủ là nền tảng quan trọng. Bài viết này giải thích cách tự động mở rộng theo lưu lượng một cách thực tế, kèm ví dụ minh hoạ với GCP và auto-scaling.",
+        "score": 0.02946912242686891
+      },
+      {
+        "doc_id": "cloud_029",
+        "title": "Điện toán đám mây: tự động mở rộng theo lưu lượng",
+        "text": "Tại các doanh nghiệp công nghệ Việt Nam, điện toán đám mây đòi hỏi phải tự động mở rộng theo lưu lượng. Các công cụ phổ biến gồm cloud, Lambda, serverless. Khái niệm triển khai và không máy chủ là nền tảng quan trọng. Bài viết này giải thích cách tự động mở rộng theo lưu lượng một cách thực tế, kèm ví dụ minh hoạ với cloud và serverless.",
+        "score": 0.029138513513513514
+      },
+      {
+        "doc_id": "cloud_005",
+        "title": "Điện toán đám mây: tự động mở rộng theo lưu lượng",
+        "text": "Để tối ưu chi phí, điện toán đám mây đòi hỏi phải tự động mở rộng theo lưu lượng. Các công cụ phổ biến gồm Lambda, multi-tenant, GCP. Khái niệm đám mây và đa người dùng là nền tảng quan trọng. Bài viết này giải thích cách tự động mở rộng theo lưu lượng một cách thực tế, kèm ví dụ minh hoạ với Lambda và GCP.",
+        "score": 0.028404512489927477
+      }
+    ]
+  },
+  "latencies": {
+    "keyword": {
+      "n_calls": 100,
+      "p50_server": 2.859900001567439,
+      "p95_server": 4.8622000012983335,
+      "p99_server": 6.743899999491987,
+      "p99_wall": 12.622700000065379
+    },
+    "semantic": {
+      "n_calls": 100,
+      "p50_server": 244.79599999904167,
+      "p95_server": 314.6634999993694,
+      "p99_server": 362.4708000006649,
+      "p99_wall": 366.66890000014973
+    },
+    "hybrid": {
+      "n_calls": 100,
+      "p50_server": 237.64800000026298,
+      "p95_server": 409.55770000073244,
+      "p99_server": 564.0325000003941,
+      "p99_wall": 569.6977999996307
+    }
+  },
+  "hybrid_p99_under_50ms": false
+}

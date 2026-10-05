@@ -3,6 +3,10 @@
 Lab cho **AICB-P2T2 · Ngày 19 · Vector Store + Feature Store**.
 Build hybrid search API + Feast feature store hoàn chỉnh, đo Precision@10 và P99 latency.
 
+**Lộ trình đang thực hiện trong repo này: NB1–NB4 bằng Docker trên Windows.**
+Code và notebook đã chuẩn bị; xem [hướng dẫn chạy và chụp bằng chứng](submission/RUN_GUIDE.md).
+Qdrant dùng collection `lab19`, Feast dùng Redis và Postgres qua cổng host `5433`.
+
 **Hai paths để chọn:**
 
 | Path | Stack | Setup | RAM | Khi nào dùng |
@@ -76,8 +80,8 @@ make api &
 make benchmark
 ```
 
-Yêu cầu: RAM ≥ 8 GB free, port 6333/6379/5432 không xung đột.
-Endpoints: Qdrant http://localhost:6333 · Redis :6379 · Postgres :5432
+Yêu cầu: RAM ≥ 8 GB free, port 6333/6379/5433 không xung đột.
+Endpoints: Qdrant http://localhost:6333 · Redis :6379 · Postgres :5433
 
 ### Ba runtime, không phải chỉ Docker
 

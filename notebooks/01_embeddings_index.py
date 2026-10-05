@@ -1,24 +1,35 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: py:percent
+#     formats: ipynb,py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.19.6
+#   kernelspec:
+#     display_name: Python (Lab 19)
+#     language: python
+#     name: lab19
 # ---
 
 # %% [markdown]
 # # NB1 — Embeddings & Vector Indexing
 #
-# **Stack:** `fastembed` (ONNX, CPU) + Qdrant in-memory.
+# **Stack:** `BAAI/bge-m3` (Sentence Transformers) + Qdrant server trong Docker.
 # Maps to slide §1 (Embeddings) + §2 (Vector DB Landscape) + deliverable bullet 1.
 #
 # > Mục tiêu: hiểu cách 1 đoạn text được biến thành vector dày, và cách Qdrant
-# > index + query vectors đó. Không cần GPU, không cần Docker.
+# > index + query vectors đó. Python chạy trong kernel Lab 19, Qdrant chạy
+# > trong Docker. Cấu hình model và địa chỉ server được đọc từ `.env`.
 
 # %%
 import _setup  # noqa: F401  -- adds repo root to sys.path
 import json
+import os
 from pathlib import Path
 
-from fastembed import TextEmbedding
+from app.embeddings import Embedder
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
 
@@ -38,68 +49,96 @@ with (DATA / "corpus_vn.jsonl").open(encoding="utf-8") as f:
         docs.append(json.loads(line))
 
 print(f"Corpus size: {len(docs)} docs")
+assert len(docs) == 1000, f"expected 1000 docs, got {len(docs)}"
 print(f"First doc:")
 print(json.dumps(docs[0], ensure_ascii=False, indent=2))
 
 # %% [markdown]
-# ## 2. Embedding model: `BAAI/bge-small-en-v1.5`
+# ## 2. Embedding model: `BAAI/bge-m3`
 #
-# `fastembed` chạy ONNX → CPU friendly, không cần GPU. 384-dim vectors.
+# `Embedder` chọn model theo `EMBEDDING_BACKEND` trong `.env`.
+# Với `bge-m3`, mỗi đoạn văn được biểu diễn bằng vector 1024 chiều.
 #
-# > Trong production tiếng Việt 2026, bạn nên dùng `bge-m3` hoặc
-# > `text-embedding-3-large` (xem deck §1, bảng *Embedding Models 2026*).
-# > Cho lab này dùng `bge-small-en` để mọi laptop chạy được nhanh.
+# > Cell này tải model nếu chưa có trong cache, rồi embed một câu mẫu.
+# > Lần đầu có thể mất vài phút hoặc lâu hơn, tùy mạng và máy.
 
 # %%
-embedder = TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
-sample = list(embedder.embed(["cloud computing tiếng Việt"]))[0]
+embedder = Embedder()
+print(f"Backend: {embedder.backend}")
+print(f"Model: {embedder.model_name}")
+assert embedder.backend == "bge-m3", "Kiểm tra EMBEDDING_BACKEND trong .env và restart kernel"
+
+sample = next(embedder.embed(["cloud computing tiếng Việt"]))
 print(f"Vector dim: {len(sample)}")
 print(f"First 8 values: {sample[:8].tolist()}")
+assert len(sample) == embedder.dim == 1024
 
 # %% [markdown]
-# ## 3. Index vào Qdrant (in-memory mode)
+# ## 3. Kết nối Qdrant server và tạo collection
 #
-# Qdrant in-memory chạy trong-process — không cần Docker, không cần server.
-# Cùng API như Qdrant production server, nên code này chuyển sang prod chỉ
-# bằng cách đổi `QdrantClient(":memory:")` → `QdrantClient(url="http://...")`.
+# Collection `lab19` chứa vector và payload của tài liệu. Số chiều của
+# collection phải khớp với model; Cosine dùng để đo độ tương đồng.
+# Nếu collection đã tồn tại, kiểm tra cấu hình và dùng lại để chạy lại notebook.
 
 # %%
-client = QdrantClient(":memory:")
-client.create_collection(
-    collection_name="lab19",
-    vectors_config=VectorParams(size=384, distance=Distance.COSINE),
+assert os.getenv("QDRANT_MODE") == "server", "Đặt QDRANT_MODE=server trong .env"
+qdrant_url = os.environ["QDRANT_URL"]
+client = QdrantClient(url=qdrant_url, timeout=60)
+
+if not client.collection_exists("lab19"):
+    client.create_collection(
+        collection_name="lab19",
+        vectors_config=VectorParams(size=embedder.dim, distance=Distance.COSINE),
+    )
+
+info = client.get_collection("lab19")
+vector_config = info.config.params.vectors
+assert isinstance(vector_config, VectorParams), "Collection lab19 cần một vector không đặt tên"
+assert vector_config.size == embedder.dim, (
+    f"Collection có {vector_config.size} chiều, model cần {embedder.dim} chiều"
 )
+assert vector_config.distance == Distance.COSINE, "Collection lab19 cần khoảng cách Cosine"
+print(f"Qdrant: {qdrant_url}")
+print(f"Collection: lab19 — {embedder.dim} chiều, Cosine")
 
 # %% [markdown]
-# ## 4. TODO — embed + upsert toàn bộ corpus
+# ## 4. Embed + upsert toàn bộ corpus
 #
-# Embed `title + " " + text` cho từng doc, batch theo 64 docs/lần (fastembed
-# CPU-bound, batch=64 là sweet spot). Upsert vào Qdrant collection `lab19`.
+# Embed `title + " " + text` theo batch 32 tài liệu, rồi upsert từng batch
+# vào collection `lab19`. `wait=True` đợi Qdrant ghi xong trước khi tiếp tục.
 #
-# **Hint:** xem `app/search.py` `_build_vector_index()` để tham khảo pattern.
+# ID dựa trên vị trí trong corpus, nên chạy lại cùng dữ liệu sẽ cập nhật
+# các point đã có. Payload giữ doc_id, topic, title và text để đọc kết quả.
 
 # %%
-# TODO: implement the embed + upsert loop here.
-# Expected outcome: client.count("lab19") == 1000
-# (~30 seconds on first run as fastembed downloads the model.)
-
-BATCH = 64
-points: list[PointStruct] = []
+BATCH = 32
 for start in range(0, len(docs), BATCH):
     batch = docs[start:start + BATCH]
     texts = [d["title"] + " " + d["text"] for d in batch]
     vectors = list(embedder.embed(texts))
-    for i, (d, v) in enumerate(zip(batch, vectors)):
-        points.append(PointStruct(
+    assert len(vectors) == len(batch), "Mỗi tài liệu phải có một vector"
+    points = [
+        PointStruct(
             id=start + i,
             vector=v.tolist(),
-            payload={"doc_id": d["doc_id"], "topic": d["topic"], "title": d["title"]},
-        ))
+            payload={
+                "doc_id": d["doc_id"], "topic": d["topic"],
+                "title": d["title"], "text": d["text"],
+            },
+        )
+        for i, (d, v) in enumerate(zip(batch, vectors))
+    ]
 
-client.upsert(collection_name="lab19", points=points)
-n_indexed = client.count(collection_name="lab19").count
+    client.upsert(collection_name="lab19", points=points, wait=True)
+    print(f"Indexed: {start + len(batch)}/{len(docs)}")
+
+n_indexed = client.count(collection_name="lab19", exact=True).count
 print(f"Indexed: {n_indexed} vectors")
 assert n_indexed == 1000, f"expected 1000 indexed, got {n_indexed}"
+
+# %%
+assert client.count(collection_name="lab19").count == 1000
+print("PASS- Đã đủ 1000 vectors")
 
 # %% [markdown]
 # ## 5. First similarity search
@@ -133,12 +172,20 @@ print(f"Query (paraphrase): {query2!r}")
 for h in hits2:
     print(f"  [{h.payload['topic']:>9}] score={h.score:.3f}  {h.payload['title']}")
 
+cloud_count = sum(h.payload["topic"] == "cloud" for h in hits2)
+print(f"Cloud trong top-5: {cloud_count}/{len(hits2)}")
+if len(hits2) == 5 and cloud_count >= 3:
+    print("PASS — phần lớn kết quả thuộc topic cloud")
+else:
+    print("Chưa đạt mục tiêu paraphrase; giữ output để phân tích kết quả")
+
 # %% [markdown]
 # ## Deliverable evidence (chụp màn hình)
 #
-# 1. Output cell 4: `Indexed: 1000 vectors`
-# 2. Output cell 5: top-5 results với scores
-# 3. Output cell 6: paraphrase query vẫn tìm đúng cluster `cloud`
+# 1. Mục 2: model `BAAI/bge-m3`, `Vector dim: 1024`.
+# 2. Mục 3 và 4: kết nối Qdrant server, `Indexed: 1000 vectors`.
+# 3. Mục 5 và 6: top-5 của hai query, kèm số kết quả thuộc topic `cloud`.
+# Lưu notebook bằng Ctrl+S và ảnh vào `submission/screenshots/`.
 #
 # ---
 #
@@ -148,9 +195,11 @@ for h in hits2:
 # pattern is mechanical, AI generates it perfectly. Just give it the spec
 # (batch size, payload schema) and review the diff.
 #
-# **Think hard yourself:** the choice of `BAAI/bge-small-en-v1.5`. Is it
-# right for tiếng Việt? (Hint: xem deck §1 bảng *Embedding Models 2026* —
-# `bge-m3` hỗ trợ multilingual tốt hơn nhưng nặng 4× hơn.) **Don't ask AI to
+# **Think hard yourself:** vì sao chọn `BAAI/bge-m3` cho corpus tiếng Việt?
+# Model hỗ trợ nhiều ngôn ngữ, nhưng cần nhiều tài nguyên hơn model nhỏ.
+# Đổi model có thể thay đổi số chiều và cần index lại. **Don't ask AI to
 # pick the embedding model without first telling it: language(s), corpus
 # size, latency budget, and re-index cost.** Đây là 1 quyết định kiến trúc,
 # không phải boilerplate.
+
+# %%

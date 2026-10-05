@@ -1,223 +1,287 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: py:percent
+#     formats: ipynb,py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.19.6
+#   kernelspec:
+#     display_name: Python (Lab 19)
+#     language: python
+#     name: lab19
 # ---
 
 # %% [markdown]
-# # NB4 — Feast Feature Store: 3 Feature Views
+# # NB4 — Feast: Postgres offline → Redis online
 #
-# **Stack:** Feast (LF AI&Data 2024+) + SQLite online store + Parquet offline.
-# Maps to slide §6 (Feast Feature Store) + deliverable bullet 3.
-#
-# > Mục tiêu: định nghĩa 3 feature views, sinh dữ liệu vào offline store
-# > (Parquet), `materialize` sang online store (SQLite), gọi
-# > `get_online_features` < 10ms — đó là lookup latency rubric.
+# Ba feature views: user_profile, item_popularity và query_velocity.
+# Sinh dữ liệu có timestamp, nạp Postgres :5433, đăng ký Feast, materialize
+# sang Redis :6379, đo online lookup và thực hiện point-in-time (PIT) join.
+# Mục tiêu: online P99 < 10 ms và PIT trả đúng feature tại thời điểm sự kiện.
 
 # %%
 import _setup  # noqa: F401
+import json
+import os
 import subprocess
+import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-import polars as pl
+import pandas as pd
+import yaml
+from feast import FeatureStore
+from feast.repo_config import RepoConfig
+from sqlalchemy import DateTime, Float, create_engine, text
+from sqlalchemy.engine import URL
+from app.evaluation import percentile, save_result
 
-REPO_ROOT = Path(_setup.__file__).resolve().parent.parent
-FEAST_DIR = REPO_ROOT / "app" / "feast_repo"
-FEAST_DATA = FEAST_DIR / "data"
-FEAST_DATA.mkdir(exist_ok=True)
+ROOT = Path(_setup.__file__).resolve().parent.parent
+FEAST_DIR = ROOT / "app/feast_repo"
+with (FEAST_DIR / "feature_store.yaml").open(encoding="utf-8") as f:
+    feast_config = RepoConfig(**yaml.safe_load(f))
+assert feast_config.online_store.type == "redis"
+assert feast_config.offline_store.type == "postgres"
+assert feast_config.offline_store.port == 5433
+pg = feast_config.offline_store
+FEAST_CLI = Path(sys.executable).with_name("feast.exe" if os.name == "nt" else "feast")
+assert FEAST_CLI.exists(), "Kernel phải là Python (Lab 19)"
+
+feast_logs = []
+def run_feast(*args):
+    print("feast " + " ".join(args))
+    res = subprocess.run(
+        [str(FEAST_CLI), *args], cwd=str(FEAST_DIR),
+        env={**os.environ, "PYTHONUTF8": "1"},
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+        timeout=180, check=False,
+        creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+    )
+    print(res.stdout)
+    if res.stderr:
+        print(res.stderr)
+    assert res.returncode == 0, f"Feast command failed: {res.stderr or res.stdout}"
+    feast_logs.append({"command": list(args), "stdout": res.stdout, "stderr": res.stderr})
+    return res
 
 # %% [markdown]
-# ## 1. Sinh dữ liệu offline (Parquet) cho 3 feature views
+# ## 1. Sinh dữ liệu và nạp ba bảng Postgres
 #
-# Trong production, dữ liệu này sẽ đến từ data warehouse (BigQuery/Snowflake/Delta).
-# Ở lab, sinh từ corpus + synthetic user activity để học pattern materialize.
+# user_profile có hai phiên bản mỗi user để thấy PIT chọn dữ liệu cũ khi cần.
+# item_popularity dùng doc_id thật trong corpus NB1. query_velocity mô tả hoạt
+# động gần đây của 100 user. Timestamp luôn có múi giờ UTC.
+# Chạy lại cell sẽ thay dữ liệu demo của ba bảng này trong database feast_offline.
 
 # %%
 NOW = datetime.now(timezone.utc).replace(microsecond=0)
+with (ROOT / "data/corpus_vn.jsonl").open(encoding="utf-8") as f:
+    docs = [json.loads(line) for line in f if line.strip()]
+assert len(docs) == 1000
 
+profile_rows = []
+for i in range(100):
+    common = {
+        "user_id": f"u_{i:03d}",
+        "preferred_language": "vi" if i % 3 else "en",
+        "topic_affinity": ["ai_ml", "cloud", "security", "database", "devops"][i % 5],
+    }
+    speed = 180 + (i * 7) % 200
+    profile_rows.extend([
+        {**common, "reading_speed_wpm": speed - 20,
+         "event_timestamp": NOW - timedelta(days=3)},
+        {**common, "reading_speed_wpm": speed,
+         "event_timestamp": NOW - timedelta(hours=i % 48)},
+    ])
 
-def make_user_profile(n_users: int = 100) -> pl.DataFrame:
-    return pl.DataFrame({
-        "user_id": [f"u_{i:03d}" for i in range(n_users)],
-        "reading_speed_wpm": [180 + (i * 7) % 200 for i in range(n_users)],
-        "preferred_language": ["vi" if i % 3 != 0 else "en" for i in range(n_users)],
-        "topic_affinity": [
-            ["ai_ml", "cloud", "security", "database", "devops"][i % 5]
-            for i in range(n_users)
-        ],
-        "event_timestamp": [NOW - timedelta(hours=i % 48) for i in range(n_users)],
-    })
+tables = {
+    "user_profile": pd.DataFrame(profile_rows),
+    "item_popularity": pd.DataFrame({
+        "doc_id": [d["doc_id"] for d in docs],
+        "click_count_24h": [(i * 13) % 500 for i in range(len(docs))],
+        "ctr_7d": [((i * 7) % 100) / 100.0 for i in range(len(docs))],
+        "avg_dwell_seconds": [10.0 + (i * 0.7) % 90 for i in range(len(docs))],
+        "event_timestamp": [NOW - timedelta(minutes=i % 720) for i in range(len(docs))],
+    }),
+    "query_velocity": pd.DataFrame({
+        "user_id": [f"u_{i:03d}" for i in range(100)],
+        "queries_last_hour": [(i * 11) % 50 for i in range(100)],
+        "distinct_topics_24h": [1 + (i * 3) % 10 for i in range(100)],
+        "event_timestamp": [NOW - timedelta(minutes=i % 30) for i in range(100)],
+    }),
+}
 
-
-def make_item_popularity(n_items: int = 1000) -> pl.DataFrame:
-    return pl.DataFrame({
-        "doc_id": [f"item_{i:04d}" for i in range(n_items)],
-        "click_count_24h": [(i * 13) % 500 for i in range(n_items)],
-        "ctr_7d": [round(((i * 7) % 100) / 100.0, 3) for i in range(n_items)],
-        "avg_dwell_seconds": [10.0 + (i * 0.7) % 90 for i in range(n_items)],
-        "event_timestamp": [NOW - timedelta(minutes=i % 720) for i in range(n_items)],
-    })
-
-
-def make_query_velocity(n_users: int = 100) -> pl.DataFrame:
-    return pl.DataFrame({
-        "user_id": [f"u_{i:03d}" for i in range(n_users)],
-        "queries_last_hour": [(i * 11) % 50 for i in range(n_users)],
-        "distinct_topics_24h": [1 + (i * 3) % 10 for i in range(n_users)],
-        "event_timestamp": [NOW - timedelta(minutes=i % 30) for i in range(n_users)],
-    })
-
-
-make_user_profile().write_parquet(FEAST_DATA / "user_profile.parquet")
-make_item_popularity().write_parquet(FEAST_DATA / "item_popularity.parquet")
-make_query_velocity().write_parquet(FEAST_DATA / "query_velocity.parquet")
-print(f"Wrote 3 Parquet sources to {FEAST_DATA}")
-for p in sorted(FEAST_DATA.glob("*.parquet")):
-    print(f"  {p.name}  {p.stat().st_size/1024:.1f} KB")
-
-# %% [markdown]
-# ## 2. `feast apply` — register 3 feature views với metadata registry
-#
-# `app/feast_repo/feature_views.py` đã định nghĩa 3 feature views (xem file đó).
-# Chạy `feast apply` để Feast đọc file definition và ghi vào `registry.db`.
-
-# %%
-res = subprocess.run(
-    ["feast", "apply"],
-    cwd=str(FEAST_DIR),
-    capture_output=True, text=True, check=False,
+engine = create_engine(
+    URL.create("postgresql+psycopg", username=pg.user, password=pg.password,
+               host=pg.host, port=pg.port, database=pg.database),
+    connect_args={"sslmode": pg.sslmode},
 )
-print("STDOUT:")
-print(res.stdout)
-if res.stderr:
-    print("STDERR:")
-    print(res.stderr)
-assert res.returncode == 0, f"feast apply failed: {res.stderr}"
+try:
+    with engine.begin() as conn:
+        for table_name, frame in tables.items():
+            sql_types = {"event_timestamp": DateTime(timezone=True)}
+            if table_name == "item_popularity":
+                sql_types.update({"ctr_7d": Float(precision=24), "avg_dwell_seconds": Float(precision=24)})
+            frame.to_sql(
+                table_name, conn, schema=pg.db_schema, if_exists="replace",
+                index=False, dtype=sql_types,
+            )
+            count = conn.execute(
+                text(f'SELECT COUNT(*) FROM "{pg.db_schema}"."{table_name}"')
+            ).scalar_one()
+            assert count == len(frame)
+            print(f"Postgres {table_name}: {count} rows")
+finally:
+    engine.dispose()
+print(tables["user_profile"].head(4).to_string(index=False))
 
 # %% [markdown]
-# ## 3. `feast materialize-incremental` — load offline → online
+# ## 2. Feast apply và kiểm tra ba feature views
 #
-# Feast scan offline store cho mọi sự kiện đến `now`, ghi giá trị mới nhất
-# (per entity_key) vào online store. SQLite trong lite path; Redis trong docker path.
+# Feast đọc definitions, kiểm tra nguồn Postgres và ghi metadata vào registry.db.
+# Lệnh feature-views list cung cấp bằng chứng tên các view đã đăng ký.
 
 # %%
-end_dt = NOW.strftime("%Y-%m-%dT%H:%M:%S")
-res = subprocess.run(
-    ["feast", "materialize-incremental", end_dt],
-    cwd=str(FEAST_DIR),
-    capture_output=True, text=True, check=False,
-)
-print(res.stdout[-1500:])
-if res.stderr:
-    print("STDERR (tail):")
-    print(res.stderr[-500:])
-assert res.returncode == 0, f"materialize failed: {res.stderr}"
-
-# %% [markdown]
-# ## 4. Online lookup — đo latency
-#
-# `get_online_features()` query online store cho 1 batch entity rows.
-# Rubric threshold: P99 < 10ms cho lookup khi online store là SQLite local
-# (Redis/Dynamo trong production sẽ < 5ms).
-
-# %%
-import time
-
-from feast import FeatureStore
-
+run_feast("apply")
+run_feast("feature-views", "list")
 fs = FeatureStore(repo_path=str(FEAST_DIR))
+registered_views = sorted(view.name for view in fs.list_feature_views())
+expected_views = ["item_popularity_features", "query_velocity_features", "user_profile_features"]
+assert registered_views == expected_views
+print("Registered views:", registered_views)
 
+# %% [markdown]
+# ## 3. Materialize Postgres → Redis
+#
+# Materialize một khoảng đầy đủ giúp nạp lại dữ liệu demo khi chạy lại notebook.
+# Sau đó chạy materialize-incremental để xác minh luồng cập nhật kể từ mốc đã nạp.
+# Lần incremental ngay sau đó có thể không có hàng mới; log lần đầy đủ chứng minh
+# dữ liệu đã được đưa vào Redis.
+
+# %%
+start_dt = (NOW - timedelta(days=31)).isoformat()
+end_dt = (NOW + timedelta(seconds=1)).isoformat()
+run_feast("materialize", start_dt, end_dt)
+run_feast("materialize-incremental", (NOW + timedelta(seconds=2)).isoformat())
+print("Materialize và materialize-incremental thành công")
+
+# %% [markdown]
+# ## 4. Online lookup cho u_001 và một doc thật
+#
+# Cùng một request lấy feature từ cả ba views. Redis giữ giá trị mới nhất
+# từng entity. Kiểm tra tất cả feature có giá trị trước khi đo latency.
+
+# %%
+fs = FeatureStore(repo_path=str(FEAST_DIR))
 REQUEST_FEATURES = [
     "user_profile_features:reading_speed_wpm",
     "user_profile_features:preferred_language",
     "user_profile_features:topic_affinity",
+    "item_popularity_features:click_count_24h",
+    "item_popularity_features:ctr_7d",
+    "item_popularity_features:avg_dwell_seconds",
     "query_velocity_features:queries_last_hour",
     "query_velocity_features:distinct_topics_24h",
 ]
-
-# Single lookup
-t0 = time.perf_counter()
-features = fs.get_online_features(
-    features=REQUEST_FEATURES,
-    entity_rows=[{"user_id": "u_001"}],
+sample_entity = {"user_id": "u_001", "doc_id": docs[0]["doc_id"]}
+start = time.perf_counter()
+online = fs.get_online_features(
+    features=REQUEST_FEATURES, entity_rows=[sample_entity], full_feature_names=True,
 ).to_dict()
-single_latency_ms = (time.perf_counter() - t0) * 1000
+single_latency_ms = (time.perf_counter() - start) * 1000
+online_sample = {key: values[0] for key, values in online.items()}
+for ref in REQUEST_FEATURES:
+    assert online_sample[ref.replace(":", "__")] is not None, f"Missing {ref}"
+assert online_sample["user_profile_features__reading_speed_wpm"] == 187
 print(f"Single lookup: {single_latency_ms:.2f}ms")
-print({k: v[0] for k, v in features.items()})
+print(json.dumps(online_sample, ensure_ascii=False, indent=2))
 
 # %% [markdown]
-# ## 5. TODO — Batch latency benchmark (100 lookups, P99)
-
-# %%
-latencies: list[float] = []
-for i in range(100):
-    user_id = f"u_{i:03d}"
-    t0 = time.perf_counter()
-    fs.get_online_features(
-        features=REQUEST_FEATURES,
-        entity_rows=[{"user_id": user_id}],
-    ).to_dict()
-    latencies.append((time.perf_counter() - t0) * 1000)
-
-latencies.sort()
-p50 = latencies[50]
-p95 = latencies[95]
-p99 = latencies[99]
-print(f"Online lookup latency over 100 calls:")
-print(f"  P50 = {p50:.2f}ms")
-print(f"  P95 = {p95:.2f}ms")
-print(f"  P99 = {p99:.2f}ms")
-
-if p99 < 10:
-    print(f"PASS — online lookup P99 < 10ms ({p99:.2f}ms)")
-else:
-    print(f"WARN — P99 = {p99:.2f}ms (SQLite trên macOS thường tốt hơn 5ms; Linux thường tốt hơn 1ms)")
-
-# %% [markdown]
-# ## 6. PIT join (offline) — đảm bảo no data leakage
+# ## 5. Warm-up và đo 100 online lookups
 #
-# `get_historical_features` thực hiện Point-in-Time join: cho mỗi event row
-# `(user_id, ts)`, lấy feature value tại ts đó (không dùng giá trị tương lai).
-# Đây là cơ chế chính để tránh training-serving skew (deck §6).
+# 10 lượt warm-up không tính vào bảng. P50/P95/P99 dùng nearest-rank,
+# gồm thời gian Feast lấy feature và chuyển response thành dict.
 
 # %%
-import pandas as pd
+for _ in range(10):
+    fs.get_online_features(
+        features=REQUEST_FEATURES, entity_rows=[sample_entity], full_feature_names=True,
+    ).to_dict()
+
+latencies = []
+for i in range(100):
+    entity = {"user_id": f"u_{i:03d}", "doc_id": docs[i]["doc_id"]}
+    start = time.perf_counter()
+    values = fs.get_online_features(
+        features=REQUEST_FEATURES, entity_rows=[entity], full_feature_names=True,
+    ).to_dict()
+    latencies.append((time.perf_counter() - start) * 1000)
+    assert all(values[ref.replace(":", "__")][0] is not None for ref in REQUEST_FEATURES)
+lookup_metrics = {
+    "n_calls": len(latencies),
+    "p50": percentile(latencies, 0.50),
+    "p95": percentile(latencies, 0.95),
+    "p99": percentile(latencies, 0.99),
+}
+print("Online lookup latency — Redis (ms)")
+for key in ("p50", "p95", "p99"):
+    print(f"  {key.upper()} = {lookup_metrics[key]:.2f}ms")
+print("PASS — online P99 < 10ms" if lookup_metrics["p99"] < 10
+      else "Chưa đạt online P99 < 10ms; giữ số đo và kiểm tra tải máy.")
+
+# %% [markdown]
+# ## 6. PIT join: lấy feature tại đúng thời điểm
+#
+# u_001 được hỏi ở NOW - 2 giờ, trước phiên bản profile mới tại NOW - 1 giờ.
+# PIT phải trả reading_speed_wpm = 167; online lookup trả phiên bản mới = 187.
+# Hai user còn lại có phiên bản mới trước thời điểm truy vấn của họ.
+
+# %%
 entity_df = pd.DataFrame({
     "user_id": ["u_001", "u_002", "u_003"],
     "event_timestamp": [NOW - timedelta(hours=2), NOW - timedelta(hours=1), NOW],
 })
-
 historical = fs.get_historical_features(
     entity_df=entity_df,
-    features=[
-        "user_profile_features:reading_speed_wpm",
-        "user_profile_features:topic_affinity",
-    ],
+    features=["user_profile_features:reading_speed_wpm", "user_profile_features:topic_affinity"],
+    full_feature_names=True,
 ).to_df()
-print(historical)
+print(historical.to_string(index=False))
+assert len(historical) == 3
+speeds = historical.set_index("user_id")["user_profile_features__reading_speed_wpm"].to_dict()
+assert speeds == {"u_001": 167, "u_002": 194, "u_003": 201}
+print("PASS — PIT trả 3 dòng và chọn đúng phiên bản feature")
+
+result_path = save_result("nb4_features.json", {
+    "online_store": "redis", "offline_store": "postgres", "postgres_port": pg.port,
+    "table_rows": {name: len(frame) for name, frame in tables.items()},
+    "registered_views": registered_views, "materialize_passed": True,
+    "online_sample": online_sample, "single_lookup_ms": single_latency_ms,
+    "lookup_latency": lookup_metrics, "online_p99_under_10ms": lookup_metrics["p99"] < 10,
+    "pit_rows": len(historical), "pit_passed": True,
+    "pit_sample": json.loads(historical.to_json(orient="records", date_format="iso")),
+    "feast_commands": feast_logs,
+})
+print(f"Saved: {result_path}")
 
 # %% [markdown]
-# ## Deliverable evidence
+# ## 7. Tạo reflection từ số đo thật
 #
-# 1. Output cell 2: 3 Parquet files generated.
-# 2. Output cell 3: `feast apply` STDOUT showing "Created feature view <name>" × 3.
-# 3. Output cell 4: `materialize` log showing rows materialized to online store.
-# 4. Output cell 5: 1 online lookup result + latency.
-# 5. Output cell 6: 100-lookup P50/P95/P99 + PASS line.
-# 6. Output cell 7: PIT join DataFrame (3 rows × features).
+# Đọc JSON của NB2–NB4 để điền kết quả thắng/thua và latency. Phần trả lời
+# reflection không quá 200 từ. Nếu chưa chạy NB2/NB3, chạy lại cell sau khi có kết quả.
+
+# %%
+from scripts.prepare_submission import write_reflection
+write_reflection(ROOT)
+
+# %% [markdown]
+# ## Bằng chứng cần lưu
 #
-# ---
-#
-# ## Vibe-coding callout
-#
-# **Delegate freely:** Feast feature view YAML / Python definitions follow strict
-# patterns (entity → source → schema). AI nails this in 1 shot if you give it
-# the schema. Cũng AI tốt cho synthetic data generators (`make_user_profile`).
-#
-# **Think hard yourself:** **TTL choices** trong feature_views.py — tại sao
-# `user_profile_features` TTL=30 ngày nhưng `query_velocity_features` TTL=1 giờ?
-# Nếu sai TTL: query_velocity với TTL=30d sẽ trả giá trị cũ → fraud detection
-# bỏ lỡ tín hiệu real-time. **PIT join correctness** cũng là *think-hard* —
-# nếu data leakage xảy ra, training accuracy đẹp nhưng prod tệ 20-30% (deck §6).
-# Đừng để AI tự chọn TTL hay timestamp_field — bạn phải biết business semantics.
+# - Mục 2: ba feature views → nb4_views.png.
+# - Mục 3: log materialize → nb4_materialize.png.
+# - Mục 4 và 5: online lookup + bảng latency → nb4_online.png.
+# - Mục 6: PIT join → nb4_pit.png.
+# - Ctrl+S giữ output, chụp ảnh vào submission/screenshots.
+# - Đối chiếu toàn bộ việc còn lại trong submission/RUN_GUIDE.md.

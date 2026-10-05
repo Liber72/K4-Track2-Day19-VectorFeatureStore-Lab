@@ -1,28 +1,13 @@
 # Reflection — Lab 19
 
-**Tên:** _<Họ Tên>_
-**Cohort:** _<A20-K4>_
-**Path đã chạy:** _<lite | docker | both>_
+**Tên:** HoangThaiDat
+**Cohort:** A20-K4
+**Path đã chạy:** Docker
 
----
+<!-- Generated from notebook results by prepare_submission.py -->
 
-## Câu hỏi (≤ 200 chữ)
+## Câu trả lời
 
-> Trên golden set 50 queries, mode nào thắng ở loại query nào (`exact` /
-> `paraphrase` / `mixed`), và tại sao? Khi nào bạn **không** dùng hybrid
-> (i.e. khi nào pure BM25 hoặc pure vector là lựa chọn đúng)?
+Trên 50 golden queries, Precision@10 trung bình: keyword 80.4%, semantic 95.2%, hybrid 90.0%. Nhóm exact: keyword/hybrid cao nhất (100.0%). Nhóm paraphrase: semantic cao nhất (86.7%). Nhóm mixed: keyword/hybrid cao nhất (100.0%). Hybrid chưa thắng cả hai mode về trung bình.
 
-_Answer here._
-
----
-
-## Điều ngạc nhiên nhất khi làm lab này
-
-_(Optional, 1–2 câu)_
-
----
-
-## Bonus challenge
-
-- [ ] Đã làm bonus (xem `bonus/`)
-- [ ] Pair work với: _<tên đồng đội nếu có>_
+BM25 dựa vào từ khóa, vector dựa vào ý nghĩa; RRF cộng điểm theo thứ hạng của hai retriever. Chất lượng kết hợp phụ thuộc chất lượng từng danh sách ứng viên. Tôi dùng riêng BM25 khi cần khớp thuật ngữ hoặc mã chính xác; dùng riêng vector khi truy vấn diễn đạt lại và semantic đã đủ tốt. Hybrid phù hợp khi cần cả hai tín hiệu, nhưng có thêm chi phí xử lý và cần đánh giá trên dữ liệu thật.

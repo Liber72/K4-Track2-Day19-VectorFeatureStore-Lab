@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import json
 import os
+import re
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
@@ -19,13 +21,16 @@ from qdrant_client.models import Distance, PointStruct, VectorParams
 from rank_bm25 import BM25Okapi
 
 from app.embeddings import Embedder
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 Mode = Literal["keyword", "semantic", "hybrid"]
 # Model + dimension now come from EMBEDDING_BACKEND (see app/embeddings.py).
 # Defaults are unchanged: fastembed / BAAI/bge-small-en-v1.5 / 384-dim.
 EMBED_MODEL = Embedder().model_name
 EMBED_DIM = Embedder().dim
-COLLECTION = "lab19_corpus"
+COLLECTION = "lab19"
 
 
 @dataclass
@@ -42,8 +47,8 @@ class SearchHit:
 class Searcher:
     """Holds the BM25 index, Qdrant client, and document metadata.
 
-    Construction is deliberately heavy (loading the embedding model + indexing
-    the whole corpus once); callers should reuse a single instance.
+    Server mode reuses the collection built in NB1 after checking its corpus
+    and vector configuration. Memory mode builds its own temporary index.
     """
 
     def __init__(self) -> None:
@@ -52,13 +57,15 @@ class Searcher:
         self.bm25: BM25Okapi | None = None
         self.client: QdrantClient | None = None
         self.embedder: Embedder | None = None
+        self.reused_index = False
+        self.bm25_ignored_tokens: set[str] = set()
 
     @property
     def size(self) -> int:
         return len(self.docs)
 
     @classmethod
-    def from_corpus(cls, corpus_path: Path) -> "Searcher":
+    def from_corpus(cls, corpus_path: Path, *, require_existing: bool = False) -> "Searcher":
         # A student who opens NB1 before running setup otherwise gets a bare
         # FileNotFoundError pointing at a relative path, with no hint that the
         # corpus is generated rather than committed.
@@ -72,7 +79,7 @@ class Searcher:
         s = cls()
         s._load_docs(corpus_path)
         s._build_bm25()
-        s._build_vector_index()
+        s._build_vector_index(require_existing=require_existing)
         return s
 
     # ── ingestion ───────────────────────────────────────────────────────
@@ -88,22 +95,38 @@ class Searcher:
         # A real production system would use a proper VN tokenizer (underthesea / pyvi).
         # That choice is a "think hard" decision flagged in VIBE-CODING.md.
         tokenized = [self._tokenize(d["title"] + " " + d["text"]) for d in self.docs]
-        self.bm25 = BM25Okapi(tokenized)
+        # Very common corpus words do not discriminate between documents.
+        # Derive this filter from document frequency, without relevance labels.
+        document_frequency = Counter(token for tokens in tokenized for token in set(tokens))
+        self.bm25_ignored_tokens = {
+            token for token, count in document_frequency.items()
+            if count / len(tokenized) >= 0.8
+        }
+        filtered = [[token for token in tokens if token not in self.bm25_ignored_tokens]
+                    for tokens in tokenized]
+        self.bm25 = BM25Okapi(filtered)
 
-    def _build_vector_index(self) -> None:
+    def _build_vector_index(self, *, require_existing: bool = False) -> None:
         self.embedder = Embedder()
 
         mode = os.getenv("QDRANT_MODE", "memory")
         if mode == "server":
             url = os.getenv("QDRANT_URL", "http://localhost:6333")
-            self.client = QdrantClient(url=url)
-        else:
+            self.client = QdrantClient(url=url, timeout=60)
+        elif mode == "memory":
+            if require_existing:
+                raise ValueError("An existing NB1 collection requires QDRANT_MODE=server")
             self.client = QdrantClient(":memory:")
+        else:
+            raise ValueError(f"Unknown QDRANT_MODE={mode!r}; use memory or server")
 
-        # Recreate is OK in lite mode (it's in-memory); for server, only create if missing.
-        existing = {c.name for c in self.client.get_collections().collections}
-        if COLLECTION in existing and mode == "server":
-            self.client.delete_collection(COLLECTION)
+        if mode == "server" and self.client.collection_exists(COLLECTION):
+            self._validate_existing_collection()
+            self.reused_index = True
+            return
+        if require_existing:
+            raise ValueError("Collection lab19 is missing. Run NB1 before NB2/NB3.")
+
         self.client.create_collection(
             collection_name=COLLECTION,
             # dimension must follow the chosen model, not a module constant --
@@ -111,25 +134,58 @@ class Searcher:
             vectors_config=VectorParams(size=self.embedder.dim, distance=Distance.COSINE),
         )
 
-        # Embed in batches of 64 — fastembed is CPU-bound and that batch size is sweet spot.
-        BATCH = 64
-        points: list[PointStruct] = []
+        BATCH = 32
         for start in range(0, len(self.docs), BATCH):
             batch = self.docs[start:start + BATCH]
             texts = [d["title"] + " " + d["text"] for d in batch]
             vectors = list(self.embedder.embed(texts))
+            if len(vectors) != len(batch):
+                raise ValueError("Expected one embedding per document")
+            points: list[PointStruct] = []
             for i, (d, v) in enumerate(zip(batch, vectors)):
                 points.append(PointStruct(
                     id=start + i,
                     vector=v.tolist(),
-                    payload={"doc_id": d["doc_id"], "title": d["title"], "text": d["text"]},
+                    payload=d,
                 ))
-        self.client.upsert(collection_name=COLLECTION, points=points)
+            self.client.upsert(collection_name=COLLECTION, points=points, wait=True)
+
+    def _validate_existing_collection(self) -> None:
+        """Check that persisted vectors belong to the corpus being searched."""
+        assert self.client is not None and self.embedder is not None
+        config = self.client.get_collection(COLLECTION).config.params.vectors
+        if (not isinstance(config, VectorParams) or config.size != self.embedder.dim
+                or config.distance != Distance.COSINE):
+            raise ValueError("Collection lab19 has a different vector configuration. Check NB1/model.")
+        expected = {d["doc_id"]: d for d in self.docs}
+        if len(expected) != len(self.docs):
+            raise ValueError("Corpus contains duplicate doc_id values")
+        if self.client.count(COLLECTION, exact=True).count != len(expected):
+            raise ValueError("Collection lab19 and corpus have different document counts. Check NB1.")
+        seen: set[str] = set()
+        offset = None
+        while True:
+            points, offset = self.client.scroll(
+                COLLECTION, limit=256, offset=offset, with_vectors=False,
+                with_payload=["doc_id", "title", "text"],
+            )
+            for point in points:
+                payload = point.payload or {}
+                doc_id = payload.get("doc_id")
+                doc = expected.get(doc_id)
+                if (doc is None or doc_id in seen
+                        or any(payload.get(key) != doc[key] for key in ("title", "text"))):
+                    raise ValueError("Collection lab19 does not match the corpus/payload. Check NB1.")
+                seen.add(doc_id)
+            if offset is None:
+                break
+        if seen != set(expected):
+            raise ValueError("Collection lab19 is missing corpus documents")
 
     # ── retrieval ───────────────────────────────────────────────────────
     @staticmethod
     def _tokenize(text: str) -> list[str]:
-        return text.lower().split()
+        return re.findall(r"\w+(?:[-/]\w+)*", text.casefold())
 
     def search(
         self,
@@ -148,8 +204,14 @@ class Searcher:
 
     def _search_keyword(self, query: str, top_k: int) -> list[SearchHit]:
         assert self.bm25 is not None
-        scores = self.bm25.get_scores(self._tokenize(query))
-        ranked = sorted(range(len(scores)), key=lambda i: -scores[i])[:top_k]
+        scores = self.bm25.get_scores([
+            token for token in self._tokenize(query)
+            if token not in self.bm25_ignored_tokens
+        ])
+        # A zero BM25 score provides no lexical evidence. Do not give such
+        # documents an arbitrary rank (and therefore a positive RRF vote).
+        candidates = [i for i, score in enumerate(scores) if score > 0]
+        ranked = sorted(candidates, key=lambda i: -scores[i])[:top_k]
         return [
             SearchHit(
                 doc_id=self.docs[i]["doc_id"],

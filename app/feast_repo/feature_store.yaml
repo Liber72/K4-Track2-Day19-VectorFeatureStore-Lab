@@ -2,23 +2,17 @@ project: lab19
 provider: local
 registry: registry.db
 online_store:
-  type: sqlite
-  path: online_store.db
-offline_store:
-  type: file
-entity_key_serialization_version: 3
+  type: redis
+  connection_string: "localhost:6379"
 
-# Docker path: replace the online_store + offline_store blocks above with the
-# following (and `feast apply` will write to Redis + Postgres instead):
-#
-# online_store:
-#   type: redis
-#   connection_string: localhost:6379
-# offline_store:
-#   type: postgres
-#   host: localhost
-#   port: 5432
-#   database: feast_offline
-#   user: feast
-#   password: feast
-#   db_schema: public
+offline_store:
+  type: postgres
+  host: localhost
+  port: 5433
+  database: feast_offline
+  db_schema: public
+  user: feast
+  password: feast
+  sslmode: disable
+
+entity_key_serialization_version: 3

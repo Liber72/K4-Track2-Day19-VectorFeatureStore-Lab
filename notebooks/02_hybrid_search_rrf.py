@@ -1,210 +1,203 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: py:percent
+#     formats: ipynb,py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.19.6
+#   kernelspec:
+#     display_name: Python (Lab 19)
+#     language: python
+#     name: lab19
 # ---
 
 # %% [markdown]
 # # NB2 — Hybrid Search: BM25 + Vector + RRF
 #
-# **Stack:** `rank-bm25` cho BM25 sparse + `qdrant-client` cho dense + RRF fusion.
-# Maps to slide §3 (Hybrid Search Mechanics) + deliverable bullet 2.
+# **Stack:** BM25 + bge-m3 + Qdrant Docker; dùng collection `lab19` của NB1.
+# Mục tiêu: so sánh Precision@10 trên cùng 50 golden queries.
+# BM25 tìm theo từ khóa, vector tìm theo ý nghĩa, RRF kết hợp thứ hạng.
+# Kết quả phụ thuộc corpus và model; chỉ kết luận sau khi đo.
 #
-# > Hybrid search (BM25 + Vector + RRF $k=60$) là mặc định production 2026 —
-# > mọi vector DB lớn (Qdrant, Weaviate, OpenSearch, Milvus) đều có sẵn. Mức
-# > cải thiện điển hình so với dense-only là **~10–15 điểm Recall@10**, nhưng
-# > con số thật phụ thuộc corpus của bạn — nên notebook này **đo trên golden set
-# > của chính lab** thay vì trích một con số từ blog.
+# Trước khi chạy: lưu NB1 và shutdown kernel NB1 để giải phóng model trong RAM.
+# Chọn kernel **Python (Lab 19)** cho notebook này.
 
 # %%
 import _setup  # noqa: F401
 import json
+import os
 import statistics
+from collections import defaultdict
+from functools import lru_cache
 from pathlib import Path
 
-from fastembed import TextEmbedding
-from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct
-from rank_bm25 import BM25Okapi
+from app.evaluation import precision_at_k, save_result
+from app.search import COLLECTION, Searcher
 
 DATA = Path(_setup.__file__).resolve().parent.parent / "data"
 
 # %% [markdown]
-# ## 1. Reload corpus + build both indices
+# ## 1. Đọc corpus, dựng BM25 và dùng lại vector NB1
+#
+# BM25 chỉ cần token hóa văn bản. Vector đã lưu trong Qdrant được kiểm tra
+# số chiều, số tài liệu và payload trước khi dùng; cell này không embed lại corpus.
 
 # %%
-docs = [json.loads(line) for line in (DATA / "corpus_vn.jsonl").open(encoding="utf-8")]
-
-# BM25
-tokenized = [(d["title"] + " " + d["text"]).lower().split() for d in docs]
-bm25 = BM25Okapi(tokenized)
-
-# Vector
-embedder = TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
-client = QdrantClient(":memory:")
-client.create_collection(
-    collection_name="lab19",
-    vectors_config=VectorParams(size=384, distance=Distance.COSINE),
-)
-BATCH = 64
-points = []
-for start in range(0, len(docs), BATCH):
-    batch = docs[start:start + BATCH]
-    texts = [d["title"] + " " + d["text"] for d in batch]
-    vectors = list(embedder.embed(texts))
-    for i, (d, v) in enumerate(zip(batch, vectors)):
-        points.append(PointStruct(
-            id=start + i, vector=v.tolist(),
-            payload={"doc_id": d["doc_id"], "topic": d["topic"]},
-        ))
-client.upsert(collection_name="lab19", points=points)
-print(f"BM25 + vector indices ready ({len(docs)} docs)")
+assert os.getenv("QDRANT_MODE") == "server", "Kiểm tra .env và restart kernel"
+searcher = Searcher.from_corpus(DATA / "corpus_vn.jsonl", require_existing=True)
+docs = searcher.docs
+bm25, embedder, client = searcher.bm25, searcher.embedder, searcher.client
+assert len(docs) == 1000
+assert embedder.backend == "bge-m3"
+assert searcher.reused_index
+print(f"Corpus: {len(docs)} docs")
+print(f"Model: {embedder.model_name} ({embedder.dim} chiều)")
+print(f"Collection: {COLLECTION} — dùng lại vector từ NB1")
+print("BM25 + vector indices ready")
+print("Ignored common corpus tokens:", sorted(searcher.bm25_ignored_tokens))
 
 # %% [markdown]
-# ## 2. Per-mode search functions
+# ## 2. Hai hàm tìm kiếm cơ sở
+#
+# Mỗi hàm trả danh sách doc_id theo thứ hạng. Khi kết hợp RRF, lấy top-50
+# từ mỗi bộ tìm kiếm trước khi chọn top-10.
+# Cache vector câu hỏi giúp tránh embed cùng câu hai lần trong phép đo chất lượng.
+# API ở NB3 vẫn embed từng request; cache này chỉ dùng trong notebook NB2.
 
 # %%
 TOP_K = 10
-RRF_K = 60   # standard default — see slide §3
-
+RRF_K = 60
 
 def search_keyword(query: str, top_k: int = TOP_K) -> list[str]:
-    scores = bm25.get_scores(query.lower().split())
-    ranked = sorted(range(len(scores)), key=lambda i: -scores[i])[:top_k]
+    tokens = [token for token in searcher._tokenize(query)
+              if token not in searcher.bm25_ignored_tokens]
+    scores = bm25.get_scores(tokens)
+    # Only documents with positive lexical evidence participate in ranking.
+    candidates = [i for i, score in enumerate(scores) if score > 0]
+    ranked = sorted(candidates, key=lambda i: -scores[i])[:top_k]
     return [docs[i]["doc_id"] for i in ranked]
 
+@lru_cache(maxsize=128)
+def query_vector(query: str) -> tuple[float, ...]:
+    return tuple(next(embedder.embed([query])).tolist())
 
 def search_semantic(query: str, top_k: int = TOP_K) -> list[str]:
-    q_vec = next(embedder.embed([query])).tolist()
-    res = client.query_points(collection_name="lab19", query=q_vec, limit=top_k)
-    return [p.payload["doc_id"] for p in res.points]
-
+    result = client.query_points(
+        collection_name=COLLECTION,
+        query=list(query_vector(query)),
+        limit=top_k,
+    )
+    return [point.payload["doc_id"] for point in result.points]
 
 # %% [markdown]
-# ## 3. TODO — implement Reciprocal Rank Fusion
+# ## 3. Reciprocal Rank Fusion
 #
-# Công thức (deck §3):
-#
-# $$\text{score}(d) = \sum_{r \in \text{retrievers}} \frac{1}{k + \text{rank}_r(d)}$$
-#
-# `rank_r(d)` là 1-based (vị trí đầu = 1, không phải 0). $k = 60$ là default công nghiệp.
-#
-# **Bước:**
-# 1. Pull top-50 từ BM25 và top-50 từ vector (depth = 5×top_k để có signal sâu).
-# 2. Cho mỗi doc, cộng `1 / (k + rank)` từ mỗi retriever (nếu doc không xuất hiện thì bỏ qua).
-# 3. Sort theo total score, trả về top-10 doc_id.
+# Công thức: score(d) = tổng `1 / (k + rank)` từ hai bộ tìm kiếm.
+# Rank bắt đầu từ **1**, k = **60**. Không cộng trực tiếp BM25 score với cosine,
+# vì hai thang điểm có ý nghĩa khác nhau.
 
 # %%
 def search_hybrid(query: str, top_k: int = TOP_K, rrf_k: int = RRF_K) -> list[str]:
     depth = max(top_k * 5, 50)
-    kw_ids = search_keyword(query, depth)
-    sem_ids = search_semantic(query, depth)
+    rankings = (search_keyword(query, depth), search_semantic(query, depth))
+    scores: dict[str, float] = {}
+    for ranked_ids in rankings:
+        for rank, doc_id in enumerate(ranked_ids, start=1):
+            scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (rrf_k + rank)
+    return [doc_id for doc_id, _ in sorted(scores.items(), key=lambda item: -item[1])[:top_k]]
 
-    # TODO: implement RRF fusion below.
-    # Hint: dict[doc_id, float] cộng 1/(rrf_k + rank) từ mỗi retriever.
-    # rank starts at 1, not 0.
-    rrf: dict[str, float] = {}
-    for rank, doc_id in enumerate(kw_ids, start=1):
-        rrf[doc_id] = rrf.get(doc_id, 0.0) + 1.0 / (rrf_k + rank)
-    for rank, doc_id in enumerate(sem_ids, start=1):
-        rrf[doc_id] = rrf.get(doc_id, 0.0) + 1.0 / (rrf_k + rank)
-
-    return [doc_id for doc_id, _ in sorted(rrf.items(), key=lambda kv: -kv[1])[:top_k]]
-
-
-# Quick sanity (1 paraphrase query from data/golden_set.jsonl):
 test_q = "co giãn linh hoạt theo nhu cầu sử dụng"
 print(f"Query: {test_q}")
-print(f"  keyword top-3:  {search_keyword(test_q)[:3]}")
-print(f"  semantic top-3: {search_semantic(test_q)[:3]}")
-print(f"  hybrid top-3:   {search_hybrid(test_q)[:3]}")
+for mode, fn in (("keyword", search_keyword), ("semantic", search_semantic), ("hybrid", search_hybrid)):
+    print(f"  {mode:8} top-3: {fn(test_q)[:3]}")
 
 # %% [markdown]
-# ## 4. Đánh giá trên golden set (50 queries)
+# ## 4. Đánh giá trên 50 golden queries
 #
-# Metric: **Precision@10** = fraction of top-10 thuộc đúng topic.
-# (Slide deck dùng "Recall@10" với 1-relevant-per-query setup khác — ở đây dùng
-# precision-style để có signal rõ với 100 docs/topic.)
+# Precision@10 = số tài liệu relevant trong top-10 / 10.
+# Dùng relevant_doc_ids của golden set; cùng query và cùng corpus cho ba mode.
+# Cell in tiến độ, bảng trung bình và kiểm tra mục tiêu hybrid thắng cả hai mode.
 
 # %%
-golden = [json.loads(line) for line in (DATA / "golden_set.jsonl").open(encoding="utf-8")]
-doc_topic = {d["doc_id"]: d["topic"] for d in docs}
+with (DATA / "golden_set.jsonl").open(encoding="utf-8") as f:
+    golden = [json.loads(line) for line in f if line.strip()]
+assert len(golden) == 50
 
+p_kw, p_sem, p_hyb, query_results = [], [], [], []
+for i, q in enumerate(golden, start=1):
+    relevant = set(q["relevant_doc_ids"])
+    scores = {
+        "keyword": precision_at_k(search_keyword(q["query"]), relevant, TOP_K),
+        "semantic": precision_at_k(search_semantic(q["query"]), relevant, TOP_K),
+        "hybrid": precision_at_k(search_hybrid(q["query"]), relevant, TOP_K),
+    }
+    p_kw.append(scores["keyword"])
+    p_sem.append(scores["semantic"])
+    p_hyb.append(scores["hybrid"])
+    query_results.append({
+        "query_id": q["query_id"], "query": q["query"],
+        "type": q["mode_hint"], "topic": q["topic"], **scores,
+    })
+    if i % 10 == 0:
+        print(f"Evaluated: {i}/{len(golden)} queries")
 
-def precision_at_10(retrieved_ids: list[str], target_topic: str) -> float:
-    if not retrieved_ids:
-        return 0.0
-    return sum(1 for d in retrieved_ids if doc_topic.get(d) == target_topic) / len(retrieved_ids)
-
-
-p_kw, p_sem, p_hyb = [], [], []
-for q in golden:
-    p_kw.append(precision_at_10(search_keyword(q["query"]), q["topic"]))
-    p_sem.append(precision_at_10(search_semantic(q["query"]), q["topic"]))
-    p_hyb.append(precision_at_10(search_hybrid(q["query"]), q["topic"]))
-
-print(f"Precision@10 (avg over {len(golden)} queries):")
-print(f"  Keyword (BM25)   : {statistics.mean(p_kw):.1%}")
-print(f"  Semantic (vector): {statistics.mean(p_sem):.1%}")
-print(f"  Hybrid  (RRF=60) : {statistics.mean(p_hyb):.1%}   <- should win")
+averages = {
+    "keyword": statistics.mean(p_kw),
+    "semantic": statistics.mean(p_sem),
+    "hybrid": statistics.mean(p_hyb),
+}
+print("\nPrecision@10 — trung bình 50 queries")
+print(f"  {'mode':10} {'Precision@10':>14}")
+for mode, value in averages.items():
+    print(f"  {mode:10} {value:>13.1%}")
+hybrid_beats_both = averages["hybrid"] > max(averages["keyword"], averages["semantic"])
+print("PASS — hybrid thắng cả keyword và semantic" if hybrid_beats_both
+      else "Chưa đạt mục tiêu hybrid thắng cả hai; giữ số đo để phân tích.")
 
 # %% [markdown]
-# ## 5. Slice theo loại query
+# ## 5. So sánh theo loại query và lưu kết quả
 #
-# Golden set có 3 loại: `exact` (BM25 ưu thế), `paraphrase` (vector ưu thế),
-# `mixed` (hybrid ưu thế). In separate scores để thấy *tại sao* hybrid thắng.
+# exact: có từ khóa rõ; paraphrase: diễn đạt cùng ý bằng từ khác;
+# mixed: kết hợp từ khóa và diễn đạt lại. Quan sát mode thắng ở từng nhóm.
+# File JSON lưu số đo thật để tạo reflection sau khi hoàn thành NB4.
 
 # %%
-from collections import defaultdict
+by_type = defaultdict(lambda: defaultdict(list))
+for q, scores in zip(golden, query_results):
+    for mode in averages:
+        by_type[q["mode_hint"]][mode].append(scores[mode])
 
-by_type: dict[str, dict[str, list[float]]] = defaultdict(lambda: {"kw": [], "sem": [], "hyb": []})
-for q, kw, sem, hyb in zip(golden, p_kw, p_sem, p_hyb):
-    by_type[q["mode_hint"]]["kw"].append(kw)
-    by_type[q["mode_hint"]]["sem"].append(sem)
-    by_type[q["mode_hint"]]["hyb"].append(hyb)
+slice_results = {}
+print(f"  {'type':12} {'n':>3} {'keyword':>10} {'semantic':>10} {'hybrid':>10}")
+for query_type in ("exact", "paraphrase", "mixed"):
+    group = by_type[query_type]
+    values = {mode: statistics.mean(group[mode]) for mode in averages}
+    slice_results[query_type] = {"n": len(group["keyword"]), **values}
+    print(f"  {query_type:12} {len(group['keyword']):>3} "
+          f"{values['keyword']:>9.1%} {values['semantic']:>9.1%} {values['hybrid']:>9.1%}")
 
-print(f"  {'type':12} {'n':>3}  {'kw':>7} {'sem':>7} {'hyb':>7}")
-for t in ("exact", "paraphrase", "mixed"):
-    m = by_type[t]
-    print(f"  {t:12} {len(m['kw']):>3}  "
-          f"{statistics.mean(m['kw']):>6.1%} "
-          f"{statistics.mean(m['sem']):>6.1%} "
-          f"{statistics.mean(m['hyb']):>6.1%}")
-
-# %% [markdown]
-# ### Diễn giải kết quả
-#
-# - `exact` queries chứa từ kỹ thuật verbatim trong corpus → BM25 mạnh, hybrid
-#   thường ngang bằng (keyword signal đã đủ mạnh).
-# - `paraphrase` queries dùng từ Việt **không** xuất hiện verbatim trong docs
-#   → cả BM25 và vector đều giảm điểm. Trên synthetic corpus 1000-doc với
-#   embedding model `BAAI/bge-small-en-v1.5` (English-trained), semantic
-#   recall trên Vietnamese paraphrases yếu (24-32%). **Đổi sang `bge-m3`
-#   (full Docker path) sẽ giúp semantic thắng paraphrase queries** — đây là
-#   teaching moment cho "embedding model choice matters".
-# - `mixed` queries có cả từ exact + ý tưởng paraphrased → **hybrid thắng rõ**
-#   (~100% vs 97-98% pure modes). Đây là pattern production-relevant nhất
-#   vì user thật ít khi viết query 100% exact term hoặc 100% paraphrase.
-#
-# Hybrid thắng *trung bình* nhờ robust trên mọi kiểu query — đó là lý do
-# production luôn default hybrid (deck §3, slide "Hybrid Search Mechanics").
+result_path = save_result("nb2_quality.json", {
+    "n_queries": len(golden), "top_k": TOP_K, "rrf_k": RRF_K,
+    "embedding_backend": embedder.backend, "collection": COLLECTION,
+    "keyword_min_score_exclusive": 0.0,
+    "keyword_preprocessing": "unicode_tokens_corpus_df_below_80_percent",
+    "keyword_ignored_tokens": sorted(searcher.bm25_ignored_tokens),
+    "average": averages, "by_type": slice_results,
+    "hybrid_beats_both": hybrid_beats_both, "queries": query_results,
+})
+print(f"Saved: {result_path}")
 
 # %% [markdown]
-# ## Deliverable evidence
+# ## Bằng chứng cần lưu
 #
-# 1. Output cell 4: bảng Precision@10 với 3 mode, hybrid > kw và > sem.
-# 2. Output cell 5: bảng slice theo loại query, exact/paraphrase/mixed.
+# - Mục 4: bảng Precision@10 và kết luận từ số đo.
+# - Mục 5: bảng exact/paraphrase/mixed.
+# - Ctrl+S để giữ output notebook.
+# - Ảnh: `submission/screenshots/nb2_precision.png` và `nb2_slices.png`.
 #
-# ---
-#
-# ## Vibe-coding callout
-#
-# **Delegate freely:** the per-mode search wrapper functions in §2. AI nailed
-# the pattern in 1 shot. Cũng AI tốt cho việc set up bảng kết quả (`statistics.mean`,
-# format `{:.1%}`) — chỉ cần spec rõ output schema.
-#
-# **Think hard yourself:** the RRF formula. Trước khi implement, hỏi AI giải
-# thích RRF rồi cross-check với deck §3. Nếu AI viết code mà rank bắt đầu từ 0
-# (không phải 1) hoặc cộng 1/rank thay vì 1/(k+rank), đã hỏng — và rất khó debug
-# về sau khi quality giảm. Đây là 1 ví dụ "AI write 5 dòng đúng đắn nhưng nếu
-# bạn không tự kiểm tra công thức, bug nằm im trong production".
+# Khi hybrid chưa thắng: đối chiếu từng query trong nb2_quality.json và các
+# danh sách top-10, kiểm tra RRF, chất lượng BM25 và model. Giữ nguyên số đo.
+
+# %%

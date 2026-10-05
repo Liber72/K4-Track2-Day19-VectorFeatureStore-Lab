@@ -1,127 +1,79 @@
-"""Benchmark harness: keyword vs semantic vs hybrid on the 50-query golden set.
-
-Reports two tables:
-  1. Quality — Precision@10 (fraction of top-10 from the relevant topic) per mode.
-  2. Latency — P50 / P95 / P99 over 100 reps of the 50 queries (5000 calls/mode).
-
-Hybrid uses Reciprocal Rank Fusion (RRF, k=60) over the two ranked lists.
-
-The rubric asserts hybrid strictly beats both pure modes on Precision@10 — the
-corpus + queries (data/corpus_vn.jsonl + data/golden_set.jsonl) are engineered
-to make this true. If hybrid does not win, your fusion implementation is wrong.
-
-Run via `make benchmark` or `python scripts/benchmark.py`.
-"""
+"""CLI quality/latency benchmark; notebook NB3 measures the actual HTTP API."""
 from __future__ import annotations
 
+import argparse
 import json
-import statistics as stats
+import statistics
 import sys
 import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-
-from app.search import Searcher  # noqa: E402  -- depends on sys.path above
-
-REPS_PER_QUERY = 100   # latency rep count per mode
-TOP_K = 10
-RRF_K = 60
-
-
-def precision_at_k(retrieved_ids: list[str], relevant_ids: set[str], k: int = TOP_K) -> float:
-    """Fraction of top-k retrieved that are in the relevant set."""
-    top = retrieved_ids[:k]
-    if not top:
-        return 0.0
-    return sum(1 for d in top if d in relevant_ids) / len(top)
+from app.evaluation import percentile, precision_at_k, save_result
+from app.search import Searcher
 
 
 def main() -> int:
-    print("Day 19 benchmark — keyword vs semantic vs hybrid")
-    print("=" * 62)
-
-    # ── Load golden set ─────────────────────────────────────────────────
-    golden = []
-    with (ROOT / "data" / "golden_set.jsonl").open(encoding="utf-8") as f:
-        for line in f:
-            golden.append(json.loads(line))
-    print(f"  Loaded {len(golden)} golden queries")
-
-    # ── Build searcher ──────────────────────────────────────────────────
-    print("  Building Searcher (this may take ~30s on first run — embedding the corpus)...")
-    t0 = time.perf_counter()
-    searcher = Searcher.from_corpus(ROOT / "data" / "corpus_vn.jsonl")
-    print(f"  Indexed {searcher.size} docs in {time.perf_counter() - t0:.1f}s\n")
-
-    # ── Quality run (1 pass over golden) ────────────────────────────────
-    p_kw, p_sem, p_hyb = [], [], []
-    for q in golden:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--reps", type=int, default=2, help="Lượt đo latency trên 50 queries (mặc định 2)")
+    args = parser.parse_args()
+    if args.reps < 1:
+        parser.error("--reps phải >= 1")
+    with (ROOT / "data/golden_set.jsonl").open(encoding="utf-8") as f:
+        golden = [json.loads(line) for line in f if line.strip()]
+    assert len(golden) == 50
+    searcher = Searcher.from_corpus(ROOT / "data/corpus_vn.jsonl")
+    print(f"Model: {searcher.embedder.model_name}; docs: {searcher.size}; reused: {searcher.reused_index}")
+    modes = ("keyword", "semantic", "hybrid")
+    quality = {mode: [] for mode in modes}
+    slices = {}
+    for i, q in enumerate(golden, start=1):
         relevant = set(q["relevant_doc_ids"])
-        hits_kw = [h.doc_id for h in searcher.search(q["query"], mode="keyword", top_k=TOP_K)]
-        hits_sem = [h.doc_id for h in searcher.search(q["query"], mode="semantic", top_k=TOP_K)]
-        hits_hyb = [h.doc_id for h in searcher.search(q["query"], mode="hybrid", top_k=TOP_K, rrf_k=RRF_K)]
-        p_kw.append(precision_at_k(hits_kw, relevant))
-        p_sem.append(precision_at_k(hits_sem, relevant))
-        p_hyb.append(precision_at_k(hits_hyb, relevant))
+        group = slices.setdefault(q["mode_hint"], {mode: [] for mode in modes})
+        for mode in modes:
+            ids = [hit.doc_id for hit in searcher.search(q["query"], mode=mode, top_k=10, rrf_k=60)]
+            score = precision_at_k(ids, relevant)
+            quality[mode].append(score)
+            group[mode].append(score)
+        if i % 10 == 0:
+            print(f"Quality: {i}/{len(golden)}")
+    averages = {mode: statistics.mean(scores) for mode, scores in quality.items()}
+    print("\nPrecision@10")
+    for mode, score in averages.items():
+        print(f"  {mode:10} {score:.1%}")
+    print(f"\n{'type':12} {'keyword':>10} {'semantic':>10} {'hybrid':>10}")
+    slice_summary = {}
+    for query_type in ("exact", "paraphrase", "mixed"):
+        values = {mode: statistics.mean(slices[query_type][mode]) for mode in modes}
+        slice_summary[query_type] = values
+        print(f"{query_type:12} {values['keyword']:>9.1%} {values['semantic']:>9.1%} {values['hybrid']:>9.1%}")
 
-    avg_kw = stats.mean(p_kw)
-    avg_sem = stats.mean(p_sem)
-    avg_hyb = stats.mean(p_hyb)
-
-    print("Quality — Precision@10 (% of top-10 in matching topic)")
-    print(f"  Keyword (BM25)   : {avg_kw:6.1%}")
-    print(f"  Semantic (vector): {avg_sem:6.1%}")
-    print(f"  Hybrid  (RRF=60) : {avg_hyb:6.1%}   <- should win")
-    print()
-
-    # Slice by query type — does hybrid help paraphrase queries the most?
-    by_mode: dict[str, dict[str, list[float]]] = {}
-    for q, kw, sem, hyb in zip(golden, p_kw, p_sem, p_hyb):
-        by_mode.setdefault(q["mode_hint"], {"kw": [], "sem": [], "hyb": []})
-        by_mode[q["mode_hint"]]["kw"].append(kw)
-        by_mode[q["mode_hint"]]["sem"].append(sem)
-        by_mode[q["mode_hint"]]["hyb"].append(hyb)
-
-    print("Quality by query type:")
-    print(f"  {'type':12} {'n':>3}  {'kw':>7} {'sem':>7} {'hyb':>7}")
-    for mode_hint in ("exact", "paraphrase", "mixed"):
-        m = by_mode.get(mode_hint, {"kw": [], "sem": [], "hyb": []})
-        if not m["kw"]:
-            continue
-        print(
-            f"  {mode_hint:12} {len(m['kw']):>3}  "
-            f"{stats.mean(m['kw']):>6.1%} {stats.mean(m['sem']):>6.1%} {stats.mean(m['hyb']):>6.1%}"
-        )
-    print()
-
-    # ── Latency run (REPS reps × 50 queries) ────────────────────────────
-    print(f"Latency — P50 / P95 / P99 over {REPS_PER_QUERY * len(golden)} calls/mode")
-    for mode in ("keyword", "semantic", "hybrid"):
-        latencies = []
-        for _ in range(REPS_PER_QUERY):
+    latency = {}
+    for mode in modes:
+        for q in golden[:10]:
+            searcher.search(q["query"], mode=mode)
+        values = []
+        for _ in range(args.reps):
             for q in golden:
-                t = time.perf_counter()
-                searcher.search(q["query"], mode=mode, top_k=TOP_K, rrf_k=RRF_K)
-                latencies.append((time.perf_counter() - t) * 1000)
-        latencies.sort()
-        n = len(latencies)
-        p50 = latencies[n // 2]
-        p95 = latencies[int(n * 0.95)]
-        p99 = latencies[int(n * 0.99)]
-        print(f"  {mode:9}: P50={p50:6.1f}ms  P95={p95:6.1f}ms  P99={p99:6.1f}ms")
-    print()
-
-    # ── Rubric assertion ────────────────────────────────────────────────
-    if avg_hyb > avg_kw and avg_hyb > avg_sem:
-        delta_kw = (avg_hyb - avg_kw) * 100
-        delta_sem = (avg_hyb - avg_sem) * 100
-        print(f"PASS — hybrid beats keyword by {delta_kw:+.1f}pp, semantic by {delta_sem:+.1f}pp")
-        return 0
-    print(f"FAIL — hybrid did NOT beat both pure modes (kw={avg_kw:.1%} sem={avg_sem:.1%} hyb={avg_hyb:.1%})")
-    print("       Check your RRF implementation: score(d) = sum_r 1/(k + rank_r(d)), k=60")
-    return 1
+                start = time.perf_counter()
+                searcher.search(q["query"], mode=mode)
+                values.append((time.perf_counter() - start) * 1000)
+        latency[mode] = {"n_calls": len(values), "p50": percentile(values, 0.50),
+                         "p95": percentile(values, 0.95), "p99": percentile(values, 0.99)}
+    print("\nDirect Searcher latency (ms), sau warm-up — không gồm HTTP")
+    print(f"{'mode':10} {'P50':>10} {'P95':>10} {'P99':>10}")
+    for mode, values in latency.items():
+        print(f"{mode:10} {values['p50']:>10.2f} {values['p95']:>10.2f} {values['p99']:>10.2f}")
+    passed = averages["hybrid"] > max(averages["keyword"], averages["semantic"])
+    print("\nPASS — hybrid thắng cả hai mode" if passed
+          else "\nChưa đạt mục tiêu hybrid thắng cả hai; đối chiếu model, corpus và thứ hạng từng query.")
+    print("Saved:", save_result("benchmark_cli.json", {
+        "n_queries": len(golden), "average": averages, "by_type": slice_summary,
+        "direct_latency": latency, "hybrid_beats_both": passed,
+    }))
+    searcher.client.close()
+    return 0 if passed else 1
 
 
 if __name__ == "__main__":

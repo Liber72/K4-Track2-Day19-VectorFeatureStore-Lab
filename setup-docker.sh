@@ -86,19 +86,12 @@ else
 fi
 
 # `_setup.py` is a helper module, not a notebook (see setup-lite.sh).
+python -m ipykernel install --sys-prefix --name lab19 --display-name "Python (Lab 19)"
 jupytext --to notebook --update notebooks/[0-9]*.py 2>/dev/null || jupytext --to notebook notebooks/[0-9]*.py
 
 # ── 5. .env for docker mode ─────────────────────────────────────────────
 if [ ! -f .env ]; then
-  cp .env.example .env
-  # Flip the lite defaults to docker — the user can edit afterward.
-  sed -i.bak \
-    -e 's/^QDRANT_MODE=memory/QDRANT_MODE=server/' \
-    -e 's/^EMBEDDING_BACKEND=fastembed/EMBEDDING_BACKEND=bge-m3/' \
-    -e 's/^FEAST_ONLINE_STORE=sqlite/FEAST_ONLINE_STORE=redis/' \
-    -e 's/^FEAST_OFFLINE_STORE=file/FEAST_OFFLINE_STORE=postgres/' \
-    .env
-  rm -f .env.bak
+  cp .env.docker.example .env
 fi
 
 # ── 6. Seed corpus + smoke test ─────────────────────────────────────────
@@ -117,7 +110,7 @@ cat <<EOF
 
   Qdrant   → http://localhost:6333  (dashboard)
   Redis    → redis://localhost:6379
-  Postgres → postgresql://feast:feast@localhost:5432/feast_offline
+  Postgres → postgresql://feast:feast@localhost:5433/feast_offline
 
 Activate the venv and continue:
 

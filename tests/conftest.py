@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import warnings
 from pathlib import Path
@@ -11,6 +12,11 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 warnings.filterwarnings("ignore")
+
+# Tests use a separate in-memory index even when the student's .env uses Docker.
+# Explicit env values also keep the default-backend tests independent of .env.
+os.environ["QDRANT_MODE"] = "memory"
+os.environ["EMBEDDING_BACKEND"] = "fastembed"
 
 
 @pytest.fixture(scope="session")

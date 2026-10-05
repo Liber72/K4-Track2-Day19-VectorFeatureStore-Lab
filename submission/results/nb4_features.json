@@ -1,0 +1,93 @@
+{
+  "measured_at": "2026-10-05T16:34:46.921913+00:00",
+  "online_store": "redis",
+  "offline_store": "postgres",
+  "postgres_port": 5433,
+  "table_rows": {
+    "user_profile": 200,
+    "item_popularity": 1000,
+    "query_velocity": 100
+  },
+  "registered_views": [
+    "item_popularity_features",
+    "query_velocity_features",
+    "user_profile_features"
+  ],
+  "materialize_passed": true,
+  "online_sample": {
+    "user_id": "u_001",
+    "doc_id": "frontend_074",
+    "user_profile_features__reading_speed_wpm": 187,
+    "user_profile_features__preferred_language": "vi",
+    "user_profile_features__topic_affinity": "cloud",
+    "item_popularity_features__click_count_24h": 0,
+    "item_popularity_features__avg_dwell_seconds": 10.0,
+    "item_popularity_features__ctr_7d": 0.0,
+    "query_velocity_features__distinct_topics_24h": 4,
+    "query_velocity_features__queries_last_hour": 11
+  },
+  "single_lookup_ms": 73.53039999907196,
+  "lookup_latency": {
+    "n_calls": 100,
+    "p50": 1.0617999996611616,
+    "p95": 1.5751999999338295,
+    "p99": 1.6959999993559904
+  },
+  "online_p99_under_10ms": true,
+  "pit_rows": 3,
+  "pit_passed": true,
+  "pit_sample": [
+    {
+      "user_id": "u_001",
+      "event_timestamp": "2026-10-05T14:34:06.000",
+      "user_profile_features__reading_speed_wpm": 167,
+      "user_profile_features__topic_affinity": "cloud"
+    },
+    {
+      "user_id": "u_002",
+      "event_timestamp": "2026-10-05T15:34:06.000",
+      "user_profile_features__reading_speed_wpm": 194,
+      "user_profile_features__topic_affinity": "security"
+    },
+    {
+      "user_id": "u_003",
+      "event_timestamp": "2026-10-05T16:34:06.000",
+      "user_profile_features__reading_speed_wpm": 201,
+      "user_profile_features__topic_affinity": "database"
+    }
+  ],
+  "feast_commands": [
+    {
+      "command": [
+        "apply"
+      ],
+      "stdout": "No project found in the repository. Using project name lab19 defined in feature_store.yaml\nApplying changes for project lab19\nDeploying infrastructure for item_popularity_features\nDeploying infrastructure for query_velocity_features\nDeploying infrastructure for user_profile_features\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "feature-views",
+        "list"
+      ],
+      "stdout": "NAME                      ENTITIES    TYPE         ENABLED    STATE\nitem_popularity_features  {'item'}    FeatureView  Yes        STATE_UNSPECIFIED\nquery_velocity_features   {'user'}    FeatureView  Yes        STATE_UNSPECIFIED\nuser_profile_features     {'user'}    FeatureView  Yes        STATE_UNSPECIFIED\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "materialize",
+        "2026-09-04T16:34:06+00:00",
+        "2026-10-05T16:34:07+00:00"
+      ],
+      "stdout": "Materializing \u001b[1m\u001b[32m3\u001b[0m feature views from \u001b[1m\u001b[32m2026-09-04 16:34:06+00:00\u001b[0m to \u001b[1m\u001b[32m2026-10-05 16:34:07+00:00\u001b[0m into the \u001b[1m\u001b[32mredis\u001b[0m online store.\n\n\u001b[1m\u001b[32mitem_popularity_features\u001b[0m:\n\u001b[1m\u001b[32mquery_velocity_features\u001b[0m:\n\u001b[1m\u001b[32muser_profile_features\u001b[0m:\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "materialize-incremental",
+        "2026-10-05T16:34:08+00:00"
+      ],
+      "stdout": "Materializing \u001b[1m\u001b[32m3\u001b[0m feature views to \u001b[1m\u001b[32m2026-10-05 16:34:08+00:00\u001b[0m into the \u001b[1m\u001b[32mredis\u001b[0m online store.\n\n\u001b[1m\u001b[32mitem_popularity_features\u001b[0m from \u001b[1m\u001b[32m2026-10-05 16:34:07+00:00\u001b[0m to \u001b[1m\u001b[32m2026-10-05 16:34:08+00:00\u001b[0m:\n\u001b[1m\u001b[32mquery_velocity_features\u001b[0m from \u001b[1m\u001b[32m2026-10-05 16:34:07+00:00\u001b[0m to \u001b[1m\u001b[32m2026-10-05 16:34:08+00:00\u001b[0m:\n\u001b[1m\u001b[32muser_profile_features\u001b[0m from \u001b[1m\u001b[32m2026-10-05 16:34:07+00:00\u001b[0m to \u001b[1m\u001b[32m2026-10-05 16:34:08+00:00\u001b[0m:\n",
+      "stderr": ""
+    }
+  ]
+}

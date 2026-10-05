@@ -21,6 +21,7 @@ data/qdrant_storage/
 app/feast_repo/data/
 app/feast_repo/registry.db
 app/feast_repo/online_store.db
+submission/results/api_server.log
 
 # Env / secrets
 .env

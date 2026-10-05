@@ -9,6 +9,7 @@ warm-up; that's the rubric threshold.
 """
 from __future__ import annotations
 
+import os
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -17,7 +18,7 @@ from typing import Literal
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 
-from app.search import Searcher, SearchHit
+from app.search import COLLECTION, Searcher
 
 ROOT = Path(__file__).resolve().parent.parent
 CORPUS_PATH = ROOT / "data" / "corpus_vn.jsonl"
@@ -28,16 +29,21 @@ _searcher: Searcher | None = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Load the Searcher once at startup. Embedding model + indexing the 1000
-    docs takes ~30s on first run. Cached on disk in subsequent runs."""
+    """Reuse NB1 vectors in Docker; the query embedding model loads on demand."""
     global _searcher
     if not CORPUS_PATH.exists():
         raise RuntimeError(
             f"{CORPUS_PATH} missing. Run `make seed` first."
         )
-    _searcher = Searcher.from_corpus(CORPUS_PATH)
-    yield
-    _searcher = None
+    _searcher = Searcher.from_corpus(
+        CORPUS_PATH, require_existing=os.getenv("QDRANT_MODE", "memory") == "server",
+    )
+    try:
+        yield
+    finally:
+        if _searcher.client is not None:
+            _searcher.client.close()
+        _searcher = None
 
 
 app = FastAPI(
@@ -73,7 +79,14 @@ def root() -> dict:
 
 @app.get("/healthz")
 def healthz() -> dict:
-    return {"ready": _searcher is not None, "n_docs": _searcher.size if _searcher else 0}
+    return {
+        "app": "lab19-search",
+        "ready": _searcher is not None,
+        "n_docs": _searcher.size if _searcher else 0,
+        "collection": COLLECTION,
+        "embedding_backend": _searcher.embedder.backend if _searcher else None,
+        "reused_index": _searcher.reused_index if _searcher else False,
+    }
 
 
 @app.get("/search", response_model=SearchResponse)
